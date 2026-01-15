@@ -97,30 +97,37 @@ if (mysqli_num_rows($permission_query) > 0) {
 			left: 0;
 			width: 100%;
 			height: 100%;
-			background: rgba(255, 255, 255, 0.9);
+			background: rgb(255, 255, 255);
 			display: flex;
 			justify-content: center;
 			align-items: center;
 			z-index: 9999;
 		}
 
-		/* Spinner Animation */
-		.spinner {
-			width: 50px;
-			height: 50px;
-			border: 5px solid #b19316;
-			border-top: 5px solid transparent;
-			border-radius: 50%;
-			animation: spin 1s linear infinite;
+		.loader-content {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
 		}
 
-		@keyframes spin {
+		/* Logo fade animation */
+		.loader-logo {
+			width: 180px;
+			height: auto;
+			animation: fadePulse 1.5s infinite ease-in-out;
+		}
+
+		@keyframes fadePulse {
 			0% {
-				transform: rotate(0deg);
+				opacity: 0.4;
+			}
+
+			50% {
+				opacity: 1;
 			}
 
 			100% {
-				transform: rotate(360deg);
+				opacity: 0.4;
 			}
 		}
 
@@ -133,9 +140,8 @@ if (mysqli_num_rows($permission_query) > 0) {
 
 	<!-- Full-Screen Loader -->
 	<div id="pageLoader">
-		<div class="loader-content" style="display: flex; flex-direction: column; align-items: center;">
-			<div class="spinner"></div>
-			<div style="margin-top: 10px; font-size: 16px;">Loading . . .</div>
+		<div class="loader-content">
+			<img src="assets/img/loader.png" alt="Loading..." class="loader-logo">
 		</div>
 	</div>
 	<!-- /Full-Screen Loader -->
@@ -368,10 +374,10 @@ if (mysqli_num_rows($permission_query) > 0) {
 				type: 'POST',
 				url: '../../API/Admin/getAllReviewsData.php',
 				dataType: 'json',
-				success: function (data) {
+				success: function(data) {
 					if (data.length > 0) {
 
-						const canEdit   = <?php echo $has_access_to_edit_review ? 'true' : 'false'; ?>;
+						const canEdit = <?php echo $has_access_to_edit_review ? 'true' : 'false'; ?>;
 						const canDelete = <?php echo $has_access_to_delete_review ? 'true' : 'false'; ?>;
 
 						$('.datatable').DataTable().destroy();
@@ -382,13 +388,13 @@ if (mysqli_num_rows($permission_query) > 0) {
 
 						table.clear();
 
-						$.each(data, function (index, row) {
+						$.each(data, function(index, row) {
 
 							const stars = renderStars(row.Star_Rating);
 							const toggleId = `status_${row.Id}`;
 
-							const statusToggle = canEdit
-								? `
+							const statusToggle = canEdit ?
+								`
 									<div class="status-toggle">
 										<input type="checkbox"
 											id="${toggleId}"
@@ -397,11 +403,11 @@ if (mysqli_num_rows($permission_query) > 0) {
 											data-id="${row.Id}">
 										<label for="${toggleId}" class="checktoggle">checkbox</label>
 									</div>
-								`
-								: '';
+								` :
+								'';
 
-							const deleteButton = canDelete
-								? `
+							const deleteButton = canDelete ?
+								`
 									<div class="actions">
 										<a href="javascript:void(0);"
 										class="btn btn-sm bg-danger-light ms-1 delete-addon-btn"
@@ -409,8 +415,8 @@ if (mysqli_num_rows($permission_query) > 0) {
 											<i class="fe fe-trash"></i> Delete
 										</a>
 									</div>
-								`
-								: '';
+								` :
+								'';
 
 							table.row.add([
 								row.Id,
@@ -435,7 +441,7 @@ if (mysqli_num_rows($permission_query) > 0) {
 						}
 					}
 				},
-				error: function (xhr, status, error) {
+				error: function(xhr, status, error) {
 					console.error('Error fetching reviews:', status, error);
 				}
 			});
@@ -487,7 +493,7 @@ if (mysqli_num_rows($permission_query) > 0) {
 
 		});
 
-		$(document).on('change', '.status-toggle .check', function () {
+		$(document).on('change', '.status-toggle .check', function() {
 
 			const checkbox = $(this);
 			const Id = checkbox.data('id');
@@ -503,7 +509,7 @@ if (mysqli_num_rows($permission_query) > 0) {
 					Is_Approved: Is_Approved
 				},
 				dataType: 'json',
-				success: function (response) {
+				success: function(response) {
 
 					if (response.success !== 'true') {
 						// Revert toggle if failed
@@ -511,12 +517,12 @@ if (mysqli_num_rows($permission_query) > 0) {
 						$('#UpdateFailedModel').modal('show');
 					}
 				},
-				error: function () {
+				error: function() {
 					// Revert toggle on error
 					checkbox.prop('checked', !checkbox.is(':checked'));
 					$('#UpdateFailedModel').modal('show');
 				},
-				complete: function () {
+				complete: function() {
 					$('#pageLoader').hide();
 				}
 			});

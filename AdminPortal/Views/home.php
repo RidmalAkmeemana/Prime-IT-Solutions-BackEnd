@@ -50,49 +50,53 @@
 		<![endif]-->
 
 		<style>
-			/* Full-Screen Loader */
-			#pageLoader {
-				position: fixed;
-				top: 0;
-				left: 0;
-				width: 100%;
-				height: 100%;
-				background: rgba(255, 255, 255, 0.9);
-				display: flex;
-				justify-content: center;
-				align-items: center;
-				z-index: 9999;
-			}
+            /* Full-Screen Loader */
+            #pageLoader {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgb(255, 255, 255);
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                z-index: 9999;
+            }
 
-			/* Spinner Animation */
-			.spinner {
-				width: 50px;
-				height: 50px;
-				border: 5px solid #b19316;
-				border-top: 5px solid transparent;
-				border-radius: 50%;
-				animation: spin 1s linear infinite;
-			}
+            .loader-content {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
 
-			@keyframes spin {
-				0% {
-					transform: rotate(0deg);
-				}
+            /* Logo fade animation */
+            .loader-logo {
+                width: 180px;
+                height: auto;
+                animation: fadePulse 1.5s infinite ease-in-out;
+            }
 
-				100% {
-					transform: rotate(360deg);
-				}
-			}
-			/* Full-Screen Loader */
-		</style>
+            @keyframes fadePulse {
+                0% {
+                    opacity: 0.4;
+                }
+                50% {
+                    opacity: 1;
+                }
+                100% {
+                    opacity: 0.4;
+                }
+            }
+            /* Full-Screen Loader */
+    	</style>
     </head>
     <body>
 
 		<!-- Full-Screen Loader -->
 		<div id="pageLoader">
-			<div class="loader-content" style="display: flex; flex-direction: column; align-items: center;">
-				<div class="spinner"></div>
-				<div style="margin-top: 10px; font-size: 16px;">Loading . . .</div>
+			<div class="loader-content">
+				<img src="assets/img/loader.png" alt="Loading..." class="loader-logo">
 			</div>
 		</div>
 		<!-- /Full-Screen Loader -->

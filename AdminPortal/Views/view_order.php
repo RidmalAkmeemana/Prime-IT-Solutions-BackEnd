@@ -97,6 +97,7 @@ if (mysqli_num_rows($permission_query) > 0) {
 			/* Adjust the dropdown height */
 			overflow-y: auto;
 		}
+
 		.background-container {
 			background-size: cover;
 			background-position: center;
@@ -112,7 +113,7 @@ if (mysqli_num_rows($permission_query) > 0) {
 			display: inline-block;
 			padding: 8px 20px;
 			border-radius: 5px;
-			background-color: #b19316;
+			background-color: #b72227;
 			color: #ffff;
 			margin-top: 8px;
 			width: 100%;
@@ -137,30 +138,37 @@ if (mysqli_num_rows($permission_query) > 0) {
 			left: 0;
 			width: 100%;
 			height: 100%;
-			background: rgba(255, 255, 255, 0.9);
+			background: rgb(255, 255, 255);
 			display: flex;
 			justify-content: center;
 			align-items: center;
 			z-index: 9999;
 		}
 
-		/* Spinner Animation */
-		.spinner {
-			width: 50px;
-			height: 50px;
-			border: 5px solid #b19316;
-			border-top: 5px solid transparent;
-			border-radius: 50%;
-			animation: spin 1s linear infinite;
+		.loader-content {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
 		}
 
-		@keyframes spin {
+		/* Logo fade animation */
+		.loader-logo {
+			width: 180px;
+			height: auto;
+			animation: fadePulse 1.5s infinite ease-in-out;
+		}
+
+		@keyframes fadePulse {
 			0% {
-				transform: rotate(0deg);
+				opacity: 0.4;
+			}
+
+			50% {
+				opacity: 1;
 			}
 
 			100% {
-				transform: rotate(360deg);
+				opacity: 0.4;
 			}
 		}
 
@@ -173,9 +181,8 @@ if (mysqli_num_rows($permission_query) > 0) {
 
 	<!-- Full-Screen Loader -->
 	<div id="pageLoader">
-		<div class="loader-content" style="display: flex; flex-direction: column; align-items: center;">
-			<div class="spinner"></div>
-			<div style="margin-top: 10px; font-size: 16px;">Loading . . .</div>
+		<div class="loader-content">
+			<img src="assets/img/loader.png" alt="Loading..." class="loader-logo">
 		</div>
 	</div>
 	<!-- /Full-Screen Loader -->
@@ -234,7 +241,7 @@ if (mysqli_num_rows($permission_query) > 0) {
 
 				<!-- /Model Alerts -->
 				<?php
-					require '../Models/alerts.php';
+				require '../Models/alerts.php';
 				?>
 				<!-- /Model Alerts -->
 
@@ -460,288 +467,297 @@ if (mysqli_num_rows($permission_query) > 0) {
 		<script src="https://cdn.tiny.cloud/1/9lf9h735jucnqfgf4ugu8egij1icgzsrgbcmsk5tg44cjba8/tinymce/8/tinymce.min.js" referrerpolicy="origin" crossorigin="anonymous"></script>
 
 		<script>
-		$(document).ready(function() {
+			$(document).ready(function() {
 
-			$('#updateStatusSelect').select2();
+				$('#updateStatusSelect').select2();
 
-			// GLOBAL ALERT FUNCTIONS
-			function showUpdateAlerts(response) {
-				$('#Update_Order').modal('hide');
-
-				if (response.success === 'true') {
-					$('#UpdateSuccessModel').modal('show');
-				} else if (response.success === 'false' && response.error === 'duplicate') {
-					$('#UpdateDuplicateModel').modal('show');
-				} else {
-					$('#UpdateFailedModel').modal('show');
-				}
-			}
-
-			function showDeleteAlerts(response) {
-				$('#Delete_Order').modal('hide');
-
-				if (response.success === 'true') {
-					$('#DeleteSuccessModel').modal('show');
-				} else {
-					$('#DeleteFailedModel').modal('show');
-				}
-			}
-
-			// FUNCTION TO TOGGLE REASON FIELD BASED ON STATUS
-			function toggleReasonField() {
-				const status = $('#updateStatusSelect').val();
-				const reasonField = $('#edit-text').closest('.col-12'); // parent div of textarea
-				const reasonTextarea = $('#edit-text');
-
-				if (status === 'Rejected' || status === 'Canceled') {
-					reasonField.removeClass('d-none'); // Show field
-					reasonTextarea.prop('required', false); // Make mandatory
-				} else {
-					reasonField.addClass('d-none'); // Hide field
-					reasonTextarea.prop('required', false); // Not mandatory
-					reasonTextarea.val(''); // Clear previous content
-					$('#count-result').text('0 / 250'); // Reset counter
-				}
-			}
-
-			// Function to fetch and display order data
-			function fetchOrderData(Order_Id) {
-
-				// PAGE LOADER
-				let startTime = performance.now();
-				window.addEventListener("load", function() {
-					let endTime = performance.now();
-					let loadTime = endTime - startTime;
-					let delay = Math.max(loadTime);
-					setTimeout(function() {
-						$("#pageLoader").hide();
-					}, delay);
-				});
-
-				$.ajax({
-					type: 'GET',
-					url: '../../API/Admin/viewOrderData.php',
-					data: { Order_Id: Order_Id },
-					dataType: 'json',
-					success: function(response) {
-						if (!response.orderData) {
-							console.error('Failed to fetch order data');
-							return;
-						}
-
-						// STATUS BADGE
-						let statusBadge = '';
-						const status = response.orderData.Status;
-						if (status === 'Completed') statusBadge = '<span class="badge badge-primary">Completed</span>';
-						else if (status === 'Pending') statusBadge = '<span class="badge badge-warning">Pending</span>';
-						else if (status === 'Rejected') statusBadge = '<span class="badge badge-secondary">Rejected</span>';
-						else if (status === 'Approved') statusBadge = '<span class="badge badge-info">Approved</span>';
-						else if (status === 'Canceled') statusBadge = '<span class="badge badge-danger">Canceled</span>';
-
-						$('#orderStatus').html(statusBadge);
-
-						// Hide reason by default
-						$('#reasonSection').addClass('d-none');
-
-						// Show reason for Rejected or Canceled
-						if (status === 'Rejected') {
-							$('#reasonTitle').text('Reject Reason');
-							$('#reason').html(response.orderData.Reject_Cancel_Reason || '-');
-							$('#reasonSection').removeClass('d-none');
-						} else if (status === 'Canceled') {
-							$('#reasonTitle').text('Cancel Reason');
-							$('#reason').html(response.orderData.Reject_Cancel_Reason || '-');
-							$('#reasonSection').removeClass('d-none');
-						}
-
-						// SET ORDER DETAILS
-						$('#packageDescription').text(response.orderData.Package_Name);
-						$('#packagePrice').text('$' + response.orderData.Price);
-						$('#packageName').text(response.orderData.Package_Name);
-						$('#orderId').text(response.orderData.Order_Id);
-						$('#customerName').text(response.orderData.Customer_Name);
-						$('#customerContact').text(response.orderData.Customer_Contact);
-						$('#customerEmail').text(response.orderData.Customer_Email);
-						$('#customerAddress').html(response.orderData.Customer_Address);
-
-						// SET CURRENT STATUS AS SELECTED
-						$('#updateStatusSelect').val(status).trigger('change');
-
-						// Trigger reason toggle for pre-selected status
-						toggleReasonField();
-
-						// EDIT BUTTON
-						$('#editOrderBtn').on('click', function() {
-							$('input[name="Order_Id"]').val(response.orderData.Order_Id);
-
-							if (tinymce.get('edit-text')) {
-								tinymce.get('edit-text').setContent(response.orderData.Reject_Cancel_Reason || '');
-							}
-
-							// Update character counter
-							const textLength = (response.orderData.Reject_Cancel_Reason || '').replace(/<[^>]*>/g,'').length;
-							$('#count-result').text(`${textLength} / 250`);
-						});
-
-						// DELETE BUTTON
-						$('#deleteOrderBtn').on('click', function() {
-							$('input[name="Order_Id"]').val(response.orderData.Order_Id);
-							$('#Order_Id').text(response.orderData.Order_Id);
-						});
-
-						// TINYMCE INIT
-						function initTinyMCE(selector, counterSelector) {
-							tinymce.init({
-								selector: selector,
-								height: 250,
-								menubar: false,
-								branding: false,
-								plugins: 'lists link',
-								toolbar: 'bold italic underline | bullist numlist | undo redo',
-								setup: function(editor) {
-									const limit = 1000;
-									const result = document.querySelector(counterSelector);
-
-									editor.on('input keyup', function() {
-										let text = editor.getContent({ format: 'text' });
-										let count = text.length;
-										result.textContent = `${count} / ${limit}`;
-
-										if (count > limit) {
-											editor.getContainer().style.border = "1px solid #F08080";
-											result.style.color = "#F08080";
-										} else {
-											editor.getContainer().style.border = "1px solid #1ABC9C";
-											result.style.color = "#333";
-										}
-									});
-								}
-							});
-						}
-
-						initTinyMCE('#edit-text', '#Update_Order #count-result');
-
-						// DATATABLE
-						$('.datatable').DataTable().destroy();
-						var table = $('.datatable').DataTable({
-							searching: true,
-							columnDefs: [{ targets: 2, className: 'text-right' }]
-						});
-						table.clear();
-
-						if (response.addons.length > 0) {
-							$.each(response.addons, function(index, addon) {
-								const formattedAddonPrice = '$' + addon.Addon_Price;
-								table.row.add([addon.Addon_Name, addon.Addon_description, formattedAddonPrice]);
-							});
-						} else {
-							console.log('No data received.');
-						}
-
-						table.draw();
-					},
-					error: function(xhr, status, error) {
-						console.error('Error:', status, error);
-					}
-				});
-			}
-
-			// GET ORDER_ID FROM URL
-			const urlParams = new URLSearchParams(window.location.search);
-			const Order_Id = urlParams.get('Order_Id');
-			fetchOrderData(Order_Id);
-
-			// UPDATE ORDER FORM
-			$('#updateOrderForm').submit(function(event) {
-				event.preventDefault(); // prevent native form submission
-
-				let status = $('#updateStatusSelect').val();
-				let reasonField = tinymce.get('edit-text');
-				let reasonText = reasonField ? reasonField.getContent({ format: 'text' }).trim() : '';
-
-				// Only require reason for Rejected or Canceled
-				if ((status === 'Rejected' || status === 'Canceled') && reasonText.length === 0) {
-					// Hide edit modal
+				// GLOBAL ALERT FUNCTIONS
+				function showUpdateAlerts(response) {
 					$('#Update_Order').modal('hide');
 
-					// Show empty reason modal
-					$('#EmptyReason').modal('show');
-
-					// Focus TinyMCE editor after modal is shown
-					$('#EmptyReason').on('shown.bs.modal', function () {
-						if (tinymce.get('edit-text')) {
-							tinymce.get('edit-text').focus();
-						}
-					});
-
-					return false; // stop form submission
+					if (response.success === 'true') {
+						$('#UpdateSuccessModel').modal('show');
+					} else if (response.success === 'false' && response.error === 'duplicate') {
+						$('#UpdateDuplicateModel').modal('show');
+					} else {
+						$('#UpdateFailedModel').modal('show');
+					}
 				}
 
-				// Trigger TinyMCE save to textarea
-				tinymce.triggerSave();
+				function showDeleteAlerts(response) {
+					$('#Delete_Order').modal('hide');
 
-				$('#pageLoader').show();
-
-				$.ajax({
-					type: 'POST',
-					url: '../../API/Admin/updateOrder.php',
-					data: $(this).serialize(),
-					success: function(response) {
-						if (typeof response === 'string') response = JSON.parse(response);
-						showUpdateAlerts(response);
-						console.log(response);
-					},
-					error: function(xhr, status, error) {
-						console.error('Error:', status, error);
-						$('#Update_Order').modal('hide');
-						$('#UpdateFailedModel').modal('show');
-					},
-					complete: function() {
-						$('#pageLoader').hide();
-					}
-				});
-			});
-
-
-			$('#UpdateSuccessModel #OkBtn').on('click', function() {
-				window.location.href = 'orders.php';
-			});
-
-			// DELETE ORDER FORM
-			$('#deleteOrderForm').submit(function(event) {
-				event.preventDefault();
-				$('#pageLoader').show();
-
-				$.ajax({
-					type: 'POST',
-					url: '../../API/Admin/deleteOrder.php',
-					data: $(this).serialize(),
-					success: function(response) {
-						if (typeof response === 'string') response = JSON.parse(response);
-						showDeleteAlerts(response);
-						console.log(response);
-					},
-					error: function(xhr, status, error) {
-						console.error('Error:', status, error);
-						$('#Delete_Order').modal('hide');
+					if (response.success === 'true') {
+						$('#DeleteSuccessModel').modal('show');
+					} else {
 						$('#DeleteFailedModel').modal('show');
-					},
-					complete: function() {
-						$('#pageLoader').hide();
 					}
+				}
+
+				// FUNCTION TO TOGGLE REASON FIELD BASED ON STATUS
+				function toggleReasonField() {
+					const status = $('#updateStatusSelect').val();
+					const reasonField = $('#edit-text').closest('.col-12'); // parent div of textarea
+					const reasonTextarea = $('#edit-text');
+
+					if (status === 'Rejected' || status === 'Canceled') {
+						reasonField.removeClass('d-none'); // Show field
+						reasonTextarea.prop('required', false); // Make mandatory
+					} else {
+						reasonField.addClass('d-none'); // Hide field
+						reasonTextarea.prop('required', false); // Not mandatory
+						reasonTextarea.val(''); // Clear previous content
+						$('#count-result').text('0 / 250'); // Reset counter
+					}
+				}
+
+				// Function to fetch and display order data
+				function fetchOrderData(Order_Id) {
+
+					// PAGE LOADER
+					let startTime = performance.now();
+					window.addEventListener("load", function() {
+						let endTime = performance.now();
+						let loadTime = endTime - startTime;
+						let delay = Math.max(loadTime);
+						setTimeout(function() {
+							$("#pageLoader").hide();
+						}, delay);
+					});
+
+					$.ajax({
+						type: 'GET',
+						url: '../../API/Admin/viewOrderData.php',
+						data: {
+							Order_Id: Order_Id
+						},
+						dataType: 'json',
+						success: function(response) {
+							if (!response.orderData) {
+								console.error('Failed to fetch order data');
+								return;
+							}
+
+							// STATUS BADGE
+							let statusBadge = '';
+							const status = response.orderData.Status;
+							if (status === 'Completed') statusBadge = '<span class="badge badge-primary">Completed</span>';
+							else if (status === 'Pending') statusBadge = '<span class="badge badge-warning">Pending</span>';
+							else if (status === 'Rejected') statusBadge = '<span class="badge badge-secondary">Rejected</span>';
+							else if (status === 'Approved') statusBadge = '<span class="badge badge-info">Approved</span>';
+							else if (status === 'Canceled') statusBadge = '<span class="badge badge-danger">Canceled</span>';
+
+							$('#orderStatus').html(statusBadge);
+
+							// Hide reason by default
+							$('#reasonSection').addClass('d-none');
+
+							// Show reason for Rejected or Canceled
+							if (status === 'Rejected') {
+								$('#reasonTitle').text('Reject Reason');
+								$('#reason').html(response.orderData.Reject_Cancel_Reason || '-');
+								$('#reasonSection').removeClass('d-none');
+							} else if (status === 'Canceled') {
+								$('#reasonTitle').text('Cancel Reason');
+								$('#reason').html(response.orderData.Reject_Cancel_Reason || '-');
+								$('#reasonSection').removeClass('d-none');
+							}
+
+							// SET ORDER DETAILS
+							$('#packageDescription').text(response.orderData.Package_Name);
+							$('#packagePrice').text('$' + response.orderData.Price);
+							$('#packageName').text(response.orderData.Package_Name);
+							$('#orderId').text(response.orderData.Order_Id);
+							$('#customerName').text(response.orderData.Customer_Name);
+							$('#customerContact').text(response.orderData.Customer_Contact);
+							$('#customerEmail').text(response.orderData.Customer_Email);
+							$('#customerAddress').html(response.orderData.Customer_Address);
+
+							// SET CURRENT STATUS AS SELECTED
+							$('#updateStatusSelect').val(status).trigger('change');
+
+							// Trigger reason toggle for pre-selected status
+							toggleReasonField();
+
+							// EDIT BUTTON
+							$('#editOrderBtn').on('click', function() {
+								$('input[name="Order_Id"]').val(response.orderData.Order_Id);
+
+								if (tinymce.get('edit-text')) {
+									tinymce.get('edit-text').setContent(response.orderData.Reject_Cancel_Reason || '');
+								}
+
+								// Update character counter
+								const textLength = (response.orderData.Reject_Cancel_Reason || '').replace(/<[^>]*>/g, '').length;
+								$('#count-result').text(`${textLength} / 250`);
+							});
+
+							// DELETE BUTTON
+							$('#deleteOrderBtn').on('click', function() {
+								$('input[name="Order_Id"]').val(response.orderData.Order_Id);
+								$('#Order_Id').text(response.orderData.Order_Id);
+							});
+
+							// TINYMCE INIT
+							function initTinyMCE(selector, counterSelector) {
+								tinymce.init({
+									selector: selector,
+									height: 250,
+									menubar: false,
+									branding: false,
+									plugins: 'lists link',
+									toolbar: 'bold italic underline | bullist numlist | undo redo',
+									setup: function(editor) {
+										const limit = 1000;
+										const result = document.querySelector(counterSelector);
+
+										editor.on('input keyup', function() {
+											let text = editor.getContent({
+												format: 'text'
+											});
+											let count = text.length;
+											result.textContent = `${count} / ${limit}`;
+
+											if (count > limit) {
+												editor.getContainer().style.border = "1px solid #F08080";
+												result.style.color = "#F08080";
+											} else {
+												editor.getContainer().style.border = "1px solid #1ABC9C";
+												result.style.color = "#333";
+											}
+										});
+									}
+								});
+							}
+
+							initTinyMCE('#edit-text', '#Update_Order #count-result');
+
+							// DATATABLE
+							$('.datatable').DataTable().destroy();
+							var table = $('.datatable').DataTable({
+								searching: true,
+								columnDefs: [{
+									targets: 2,
+									className: 'text-right'
+								}]
+							});
+							table.clear();
+
+							if (response.addons.length > 0) {
+								$.each(response.addons, function(index, addon) {
+									const formattedAddonPrice = '$' + addon.Addon_Price;
+									table.row.add([addon.Addon_Name, addon.Addon_description, formattedAddonPrice]);
+								});
+							} else {
+								console.log('No data received.');
+							}
+
+							table.draw();
+						},
+						error: function(xhr, status, error) {
+							console.error('Error:', status, error);
+						}
+					});
+				}
+
+				// GET ORDER_ID FROM URL
+				const urlParams = new URLSearchParams(window.location.search);
+				const Order_Id = urlParams.get('Order_Id');
+				fetchOrderData(Order_Id);
+
+				// UPDATE ORDER FORM
+				$('#updateOrderForm').submit(function(event) {
+					event.preventDefault(); // prevent native form submission
+
+					let status = $('#updateStatusSelect').val();
+					let reasonField = tinymce.get('edit-text');
+					let reasonText = reasonField ? reasonField.getContent({
+						format: 'text'
+					}).trim() : '';
+
+					// Only require reason for Rejected or Canceled
+					if ((status === 'Rejected' || status === 'Canceled') && reasonText.length === 0) {
+						// Hide edit modal
+						$('#Update_Order').modal('hide');
+
+						// Show empty reason modal
+						$('#EmptyReason').modal('show');
+
+						// Focus TinyMCE editor after modal is shown
+						$('#EmptyReason').on('shown.bs.modal', function() {
+							if (tinymce.get('edit-text')) {
+								tinymce.get('edit-text').focus();
+							}
+						});
+
+						return false; // stop form submission
+					}
+
+					// Trigger TinyMCE save to textarea
+					tinymce.triggerSave();
+
+					$('#pageLoader').show();
+
+					$.ajax({
+						type: 'POST',
+						url: '../../API/Admin/updateOrder.php',
+						data: $(this).serialize(),
+						success: function(response) {
+							if (typeof response === 'string') response = JSON.parse(response);
+							showUpdateAlerts(response);
+							console.log(response);
+						},
+						error: function(xhr, status, error) {
+							console.error('Error:', status, error);
+							$('#Update_Order').modal('hide');
+							$('#UpdateFailedModel').modal('show');
+						},
+						complete: function() {
+							$('#pageLoader').hide();
+						}
+					});
 				});
-			});
 
-			$('#DeleteSuccessModel #OkBtn').on('click', function() {
-				window.location.href = 'orders.php';
-			});
 
-			// TOGGLE REASON FIELD ON STATUS CHANGE
-			$('#updateStatusSelect').on('change', function() {
-				toggleReasonField();
-			});
+				$('#UpdateSuccessModel #OkBtn').on('click', function() {
+					window.location.href = 'orders.php';
+				});
 
-		});
+				// DELETE ORDER FORM
+				$('#deleteOrderForm').submit(function(event) {
+					event.preventDefault();
+					$('#pageLoader').show();
+
+					$.ajax({
+						type: 'POST',
+						url: '../../API/Admin/deleteOrder.php',
+						data: $(this).serialize(),
+						success: function(response) {
+							if (typeof response === 'string') response = JSON.parse(response);
+							showDeleteAlerts(response);
+							console.log(response);
+						},
+						error: function(xhr, status, error) {
+							console.error('Error:', status, error);
+							$('#Delete_Order').modal('hide');
+							$('#DeleteFailedModel').modal('show');
+						},
+						complete: function() {
+							$('#pageLoader').hide();
+						}
+					});
+				});
+
+				$('#DeleteSuccessModel #OkBtn').on('click', function() {
+					window.location.href = 'orders.php';
+				});
+
+				// TOGGLE REASON FIELD ON STATUS CHANGE
+				$('#updateStatusSelect').on('change', function() {
+					toggleReasonField();
+				});
+
+			});
 		</script>
 
 

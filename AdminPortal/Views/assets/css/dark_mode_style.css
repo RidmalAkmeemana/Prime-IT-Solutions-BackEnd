@@ -143,7 +143,7 @@ body.dark-mode .profile-menu .nav-tabs.nav-tabs-solid :hover{
 }
 
 body.dark-mode .profile-menu .nav-tabs.nav-tabs-solid .nav-link.active {
-    background-color: #b19316 !important;   /* Active tab darker highlight */
+    background-color: #b72227 !important;   /* Active tab darker highlight */
 }
 
 /* ================================
@@ -329,7 +329,7 @@ body.dark-mode .profile-header .profile-image {
    DARK MODE — Full-Screen Loader Spinner
 ================================ */
 body.dark-mode #pageLoader {
-    background-color: rgba(18, 18, 18, 0.9) !important; /* dark overlay */
+    background-color: rgb(18, 18, 18) !important; /* dark overlay */
 }
 
 body.dark-mode #pageLoader .loader-content {
@@ -337,7 +337,7 @@ body.dark-mode #pageLoader .loader-content {
 }
 
 body.dark-mode #pageLoader .spinner {
-	border: 5px solid #b19316;
+	border: 5px solid #b72227;
 	border-top: 5px solid transparent;
 }
 

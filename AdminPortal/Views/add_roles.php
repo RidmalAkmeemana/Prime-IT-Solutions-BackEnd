@@ -71,30 +71,37 @@ if (mysqli_num_rows($permission_query) > 0) {
 			left: 0;
 			width: 100%;
 			height: 100%;
-			background: rgba(255, 255, 255, 0.9);
+			background: rgb(255, 255, 255);
 			display: flex;
 			justify-content: center;
 			align-items: center;
 			z-index: 9999;
 		}
 
-		/* Spinner Animation */
-		.spinner {
-			width: 50px;
-			height: 50px;
-			border: 5px solid #b19316;
-			border-top: 5px solid transparent;
-			border-radius: 50%;
-			animation: spin 1s linear infinite;
+		.loader-content {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
 		}
 
-		@keyframes spin {
+		/* Logo fade animation */
+		.loader-logo {
+			width: 180px;
+			height: auto;
+			animation: fadePulse 1.5s infinite ease-in-out;
+		}
+
+		@keyframes fadePulse {
 			0% {
-				transform: rotate(0deg);
+				opacity: 0.4;
+			}
+
+			50% {
+				opacity: 1;
 			}
 
 			100% {
-				transform: rotate(360deg);
+				opacity: 0.4;
 			}
 		}
 
@@ -107,9 +114,8 @@ if (mysqli_num_rows($permission_query) > 0) {
 
 	<!-- Full-Screen Loader -->
 	<div id="pageLoader">
-		<div class="loader-content" style="display: flex; flex-direction: column; align-items: center;">
-			<div class="spinner"></div>
-			<div style="margin-top: 10px; font-size: 16px;">Loading . . .</div>
+		<div class="loader-content">
+			<img src="assets/img/loader.png" alt="Loading..." class="loader-logo">
 		</div>
 	</div>
 	<!-- /Full-Screen Loader -->
@@ -178,9 +184,12 @@ if (mysqli_num_rows($permission_query) > 0) {
 						</div>
 						<div class="col-sm-5 col">
 							<?php if ($has_access_to_add_role): ?>
-								<a href="#Add_Role" data-toggle="modal" class="btn btn-primary float-right mt-2"> <i class="fa fa-plus-square" aria-hidden="true"></i> Add New User Role</a>
+								<a href="#Add_Role" data-toggle="modal" class="btn btn-primary float-right mt-2"> <i
+										class="fa fa-plus-square" aria-hidden="true"></i> Add New User Role</a>
 							<?php else: ?>
-								<a style="display:none;" href="#" data-toggle="modal" class="btn btn-primary float-right mt-2"> <i class="fa fa-plus-square" aria-hidden="true"></i> Add New User Role</a>
+								<a style="display:none;" href="#" data-toggle="modal"
+									class="btn btn-primary float-right mt-2"> <i class="fa fa-plus-square"
+										aria-hidden="true"></i> Add New User Role</a>
 							<?php endif; ?>
 						</div>
 					</div>
@@ -233,7 +242,8 @@ if (mysqli_num_rows($permission_query) > 0) {
 						</button>
 					</div>
 					<div class="modal-body">
-						<form method="POST" action="../../API/Admin/addNewRole.php" id="addRoleForm" enctype="multipart/form-data">
+						<form method="POST" action="../../API/Admin/addNewRole.php" id="addRoleForm"
+							enctype="multipart/form-data">
 							<div class="row form-row">
 
 								<div class="col-12">
@@ -278,7 +288,8 @@ if (mysqli_num_rows($permission_query) > 0) {
 
 	<!-- Select2 JS -->
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
-	<script src="https://cdn.tiny.cloud/1/9lf9h735jucnqfgf4ugu8egij1icgzsrgbcmsk5tg44cjba8/tinymce/8/tinymce.min.js" referrerpolicy="origin" crossorigin="anonymous"></script>
+	<script src="https://cdn.tiny.cloud/1/9lf9h735jucnqfgf4ugu8egij1icgzsrgbcmsk5tg44cjba8/tinymce/8/tinymce.min.js"
+		referrerpolicy="origin" crossorigin="anonymous"></script>
 
 	<script>
 		// GLOBAL ALERT FUNCTIONS
@@ -295,14 +306,14 @@ if (mysqli_num_rows($permission_query) > 0) {
 		}
 
 		// DOCUMENT READY
-		$(document).ready(function() {
+		$(document).ready(function () {
 			// PAGE LOADER
 			let startTime = performance.now();
-			window.addEventListener("load", function() {
+			window.addEventListener("load", function () {
 				let endTime = performance.now();
 				let loadTime = endTime - startTime;
 				let delay = Math.max(loadTime);
-				setTimeout(function() {
+				setTimeout(function () {
 					$("#pageLoader").hide();
 				}, delay);
 			});
@@ -312,26 +323,26 @@ if (mysqli_num_rows($permission_query) > 0) {
 				type: 'POST',
 				url: '../../API/Admin/getAllRoleData.php',
 				dataType: 'json',
-				success: function(data) {
+				success: function (data) {
 					if (data.length > 0) {
 						// Destroy existing DataTable, if any
 						$('.datatable').DataTable().destroy();
 
 						var table = $('.datatable').DataTable({
 							searching: true, // Enable search
-							columnDefs: 
-							[
-								{
-									targets: 3,
-									className: 'text-center'
-								}
-							]
+							columnDefs:
+								[
+									{
+										targets: 3,
+										className: 'text-center'
+									}
+								]
 						});
 
 						// Clear existing rows
 						table.clear();
 
-						$.each(data, function(index, row) {
+						$.each(data, function (index, row) {
 							table.row.add([
 								row.Role_Id,
 								row.Role_Name,
@@ -347,13 +358,13 @@ if (mysqli_num_rows($permission_query) > 0) {
 						console.log('No data received.');
 					}
 				},
-				error: function(xhr, status, error) {
+				error: function (xhr, status, error) {
 					console.error('Error:', status, error);
 				}
 			});
 
 			// ADD ROLE
-			$('#addRoleForm').submit(function(event) {
+			$('#addRoleForm').submit(function (event) {
 
 				event.preventDefault();
 
@@ -363,7 +374,7 @@ if (mysqli_num_rows($permission_query) > 0) {
 					type: 'POST',
 					url: '../../API/Admin/addNewRole.php',
 					data: $(this).serialize(),
-					success: function(response) {
+					success: function (response) {
 						// Parse the response as a JSON object (if not already parsed)
 						if (typeof response === 'string') {
 							response = JSON.parse(response);
@@ -375,20 +386,20 @@ if (mysqli_num_rows($permission_query) > 0) {
 						// Log the response for debugging
 						console.log(response);
 					},
-					error: function(xhr, status, error) {
+					error: function (xhr, status, error) {
 						console.error('Error:', status, error);
 						// Hide the Add Supplier modal in case of any AJAX errors and show failure modal
 						$('#Add_Role').modal('hide');
 						$('#SaveFailedModel').modal('show');
 					},
-					complete: function() {
+					complete: function () {
 						$('#pageLoader').hide(); // Hide loader after response (success or error)
 					}
 				});
 			});
 
 			// Handle the "Ok" button click in the SaveSuccessModel
-			$('#SaveSuccessModel #OkBtn').on('click', function() {
+			$('#SaveSuccessModel #OkBtn').on('click', function () {
 				window.location.href = 'add_roles.php';
 			});
 		});
@@ -398,14 +409,14 @@ if (mysqli_num_rows($permission_query) > 0) {
 	<script>
 		let startTime = performance.now(); // Capture the start time when the page starts loading
 
-		window.addEventListener("load", function() {
+		window.addEventListener("load", function () {
 			let endTime = performance.now(); // Capture the end time when the page is fully loaded
 			let loadTime = endTime - startTime; // Calculate the total loading time
 
 			// Ensure the loader stays for at least 500ms but disappears dynamically based on actual load time
 			let delay = Math.max(loadTime);
 
-			setTimeout(function() {
+			setTimeout(function () {
 				document.getElementById("pageLoader").style.display = "none";
 			}, delay);
 		});
