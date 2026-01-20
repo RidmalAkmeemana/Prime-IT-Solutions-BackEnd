@@ -56,7 +56,7 @@ $html = "
 
         <tr>
             <td style='padding-top:20px;text-align:center;'>
-                <img src='https://uat.orbislk.com/Bloomdecouse/Web/Views/assets/img/logo.png' alt='Logo'>
+                <img src='https://uat.orbislk.com/Bloomdecous-Backend/Web/Views/assets/img/logo.png' alt='Logo'>
             </td>
         </tr>
 
