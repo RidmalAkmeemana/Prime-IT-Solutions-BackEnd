@@ -1,5 +1,5 @@
 <?php
-
+header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json; charset=UTF-8");
 require '../../API/Connection/config.php';
 
@@ -8,6 +8,7 @@ $sql = "SELECT
         r.Customer_Id,
         c.Customer_Name,
         c.Customer_Email,
+        c.Customer_Address,
         r.Star_Rating,
         r.Message,
         r.Is_Approved,
@@ -32,6 +33,7 @@ if ($result->num_rows > 0) {
             "Customer_Id" => $row["Customer_Id"],
             "Customer_Name" => $row["Customer_Name"],
             "Customer_Email" => $row["Customer_Email"],
+            "Customer_Address" => $row["Customer_Address"],
             "Star_Rating" => $row["Star_Rating"],
             "Message" => $row["Message"],
             "Is_Approved" => $row["Is_Approved"],

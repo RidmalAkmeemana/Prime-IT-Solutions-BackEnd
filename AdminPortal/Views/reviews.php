@@ -393,6 +393,21 @@ if (mysqli_num_rows($permission_query) > 0) {
 							const stars = renderStars(row.Star_Rating);
 							const toggleId = `status_${row.Id}`;
 
+							const fullMessage = row.Message;
+							const shortMessage =
+							fullMessage.length > 50
+								? fullMessage.substring(0, 50) + '...'
+								: fullMessage;
+
+							const messageCell = `
+							<span 
+								class="review-tooltip" 
+								title="${$('<div>').text(fullMessage).html()}"
+							>
+								${shortMessage}
+							</span>
+							`;
+
 							const statusToggle = canEdit ?
 								`
 									<div class="status-toggle">
@@ -423,7 +438,7 @@ if (mysqli_num_rows($permission_query) > 0) {
 								row.Customer_Name,
 								row.Customer_Email,
 								stars,
-								row.Message,
+								messageCell,
 								statusToggle,
 								row.Created_Date,
 								deleteButton
