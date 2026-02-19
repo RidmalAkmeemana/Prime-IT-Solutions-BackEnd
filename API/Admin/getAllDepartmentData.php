@@ -2,16 +2,14 @@
 
 require '../../API/Connection/BackEndPermission.php';
 
-// Fetch products with Qty > 0 and Inventort_Updated = 'True'
 $sql = "SELECT 
-        a.Id, 
-        a.Addon_Name,
-        a.Addon_description,
-        a.Addon_Price
+        d.Id, 
+        d.Department_Name,
+        d.Department_description
     FROM 
-        tbl_addon a
+        tbl_departments d
     ORDER BY 
-        a.Id ASC";
+        d.Id ASC";
 
 $result = $conn->query($sql);
 
@@ -21,9 +19,8 @@ if ($result->num_rows > 0) {
     while($row = $result->fetch_assoc()) {
         array_push($dataset, array(
             "Id" => $row["Id"],
-            "Addon_Name" => $row["Addon_Name"],
-            "Addon_description" => $row["Addon_description"],
-            "Addon_Price" => $row["Addon_Price"]
+            "Department_Name" => $row["Department_Name"],
+            "Department_description" => $row["Department_description"]
         ));
     }
 }

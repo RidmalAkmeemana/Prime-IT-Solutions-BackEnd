@@ -2,24 +2,23 @@
 
 require '../../API/Connection/BackEndPermission.php';
 
-$Addon_Name = $_POST['Addon_Name'];
-$Addon_description = $_POST['Addon_description'];
-$Addon_Price = $_POST['Addon_Price'];
+$Postal_Code = $_POST['Postal_Code'];
+$Location_Name = $_POST['Location_Name'];
 
-if (empty($Addon_Name) || empty($Addon_description) || empty($Addon_Price)) {
+if (empty($Postal_Code) || empty($Location_Name)) {
     $myObj = new \stdClass();
     $myObj->success = 'false';
     $myObj->error = 'empty';
     echo json_encode($myObj);
     exit();
 } else {
-    // Check if the Addon_Name already exists in the database
-    $checkQuery = "SELECT * FROM `tbl_addon` WHERE `Addon_Name`='$Addon_Name'";
+    // Check if the Postal_Code already exists in the database
+    $checkQuery = "SELECT * FROM `tbl_locations` WHERE `Postal_Code`='$Postal_Code'";
     $checkResult = mysqli_query($conn, $checkQuery);
 
     if (mysqli_num_rows($checkResult) > 0) {
-        // If Addon_Name already exists, update the tbl_addon
-        $sql = "UPDATE `tbl_addon` SET `Addon_description` = '$Addon_description', `Addon_Price` = '$Addon_Price'  WHERE `tbl_addon`.`Addon_Name` = '$Addon_Name';";
+        // If Postal_Code already exists, update the tbl_locations
+        $sql = "UPDATE `tbl_locations` SET `Location_Name` = '$Location_Name' WHERE `tbl_locations`.`Postal_Code` = '$Postal_Code';";
 
         if (mysqli_query($conn, $sql)) {
             $myObj = new \stdClass();
@@ -32,8 +31,8 @@ if (empty($Addon_Name) || empty($Addon_description) || empty($Addon_Price)) {
             echo json_encode($myObj);
         }
     } else {
-        // If Package_Id doesn't exist, insert into tbl_addon
-        $sql1 = "INSERT INTO `tbl_addon` (`Addon_Name`, `Addon_description`, `Addon_Price`) VALUES ('$Addon_Name', '$Addon_description', '$Addon_Price')";
+        // If Postal_Code doesn't exist, insert into tbl_locations
+        $sql1 = "INSERT INTO `tbl_locations` (`Postal_Code`, `Location_Name`) VALUES ('$Postal_Code', '$Location_Name')";
 
         if (mysqli_query($conn, $sql1)) {
 
@@ -44,7 +43,7 @@ if (empty($Addon_Name) || empty($Addon_description) || empty($Addon_Price)) {
 
             $myObj = new \stdClass();
             $myObj->success = 'false';
-            $myObj->error = 'insert_failed_addon';
+            $myObj->error = 'insert_failed_location';
             echo json_encode($myObj);
         }
     }

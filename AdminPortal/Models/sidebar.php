@@ -57,15 +57,15 @@
 
                 <p class="menu-title" style="color:#949494;"><span>Main Pages</span></p>
 
-                <?php if (hasPermission($role, 'add_packages.php', $conn)) { ?>
-                <li class="<?php echo ($currentPage == 'add_packages.php' || $currentPage == 'view_packages.php') ? 'active' : ''; ?>"> 
-                    <a href="add_packages.php"><i class="fa fa-dropbox" aria-hidden="true"></i> <span>Packages</span></a>
+                <?php if (hasPermission($role, 'add_departments.php', $conn)) { ?>
+                <li class="<?php echo ($currentPage == 'add_departments.php') ? 'active' : ''; ?>"> 
+                    <a href="add_departments.php"><i class="fa fa-building-o" aria-hidden="true"></i> <span>Departments</span></a>
                 </li>
                 <?php } ?>
 
-                <?php if (hasPermission($role, 'add_addons.php', $conn)) { ?>
-                <li class="<?php echo ($currentPage == 'add_addons.php' || $currentPage == 'view_addons.php') ? 'active' : ''; ?>"> 
-                    <a href="add_addons.php"><i class="fa fa-gift" aria-hidden="true"></i> <span>Addons</span></a>
+                <?php if (hasPermission($role, 'add_locations.php', $conn)) { ?>
+                <li class="<?php echo ($currentPage == 'add_locations.php') ? 'active' : ''; ?>"> 
+                    <a href="add_locations.php"><i class="fa fa-map-marker" aria-hidden="true"></i> <span>Location</span></a>
                 </li>
                 <?php } ?>
 

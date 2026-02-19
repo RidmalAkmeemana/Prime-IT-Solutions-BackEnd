@@ -20,25 +20,25 @@ $query = mysqli_query($conn, "SELECT * FROM `tbl_user` WHERE `username` = '$user
 $fetch = mysqli_fetch_array($query);
 $user_status = $fetch['Status'];
 
-// Check if user has access to addNewAddon.php
-$has_access_to_add_addon = false;
+// Check if user has access to addNewDepartment.php
+$has_access_to_add_department = false;
 $permission_query = mysqli_query($conn, "SELECT * FROM `tbl_backend_permissions` WHERE `Role` = '$user_status' AND `Backend_Id` = 194") or die(mysqli_error());
 if (mysqli_num_rows($permission_query) > 0) {
-	$has_access_to_add_addon = true;
+	$has_access_to_add_department = true;
 }
 
-// Check if user has access to updateAddon.php
-$has_access_to_edit_addon = false;
+// Check if user has access to updateDepartment.php
+$has_access_to_edit_department = false;
 $permission_query = mysqli_query($conn, "SELECT * FROM `tbl_backend_permissions` WHERE `Role` = '$user_status' AND `Backend_Id` = 196") or die(mysqli_error());
 if (mysqli_num_rows($permission_query) > 0) {
-	$has_access_to_edit_addon = true;
+	$has_access_to_edit_department = true;
 }
 
-// Check if user has access to deleteAddon.php
-$has_access_to_delete_addon = false;
+// Check if user has access to deleteDepartment.php
+$has_access_to_delete_department = false;
 $permission_query = mysqli_query($conn, "SELECT * FROM `tbl_backend_permissions` WHERE `Role` = '$user_status' AND `Backend_Id` = 197") or die(mysqli_error());
 if (mysqli_num_rows($permission_query) > 0) {
-	$has_access_to_delete_addon = true;
+	$has_access_to_delete_department = true;
 }
 
 ?>
@@ -49,7 +49,7 @@ if (mysqli_num_rows($permission_query) > 0) {
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
-	<title><?php echo ($companyName); ?> - Packages</title>
+	<title><?php echo ($companyName); ?> - Departments</title>
 
 	<!-- Favicon -->
 	<link rel="shortcut icon" type="image/x-icon" href="assets/img/favicon.png">
@@ -209,17 +209,17 @@ if (mysqli_num_rows($permission_query) > 0) {
 				<div class="page-header">
 					<div class="row">
 						<div class="col-sm-7 col-auto">
-							<h3 class="page-title">Addons</h3>
+							<h3 class="page-title">Departments</h3>
 							<ul class="breadcrumb">
 								<li class="breadcrumb-item"><a href="home.php">Dashboard</a></li>
-								<li class="breadcrumb-item active">Addons</li>
+								<li class="breadcrumb-item active">Departments</li>
 							</ul>
 						</div>
 						<div class="col-sm-5 col">
-							<?php if ($has_access_to_add_addon): ?>
-								<a href="#Add_Addon" data-toggle="modal" class="btn btn-primary float-right mt-2"> <i class="fa fa-plus-square" aria-hidden="true"></i> Add New Addon</a>
+							<?php if ($has_access_to_add_department): ?>
+								<a href="#Add_Department" data-toggle="modal" class="btn btn-primary float-right mt-2"> <i class="fa fa-plus-square" aria-hidden="true"></i> Add New Department</a>
 							<?php else: ?>
-								<a style="display:none;" href="#" data-toggle="modal" class="btn btn-primary float-right mt-2"> <i class="fa fa-plus-square" aria-hidden="true"></i> Add New Addon</a>
+								<a style="display:none;" href="#" data-toggle="modal" class="btn btn-primary float-right mt-2"> <i class="fa fa-plus-square" aria-hidden="true"></i> Add New Department</a>
 							<?php endif; ?>
 						</div>
 					</div>
@@ -241,9 +241,8 @@ if (mysqli_num_rows($permission_query) > 0) {
 										<thead>
 											<tr>
 												<th>#</th>
-												<th>Addon Name</th>
-												<th>Addon Description</th>
-												<th>Addon Price</th>
+												<th>Department Name</th>
+												<th>Department Description</th>
 												<th>Action</th>
 											</tr>
 										</thead>
@@ -263,43 +262,31 @@ if (mysqli_num_rows($permission_query) > 0) {
 
 
 		<!-- Add Modal -->
-		<div class="modal fade" id="Add_Addon" aria-hidden="true" role="dialog">
+		<div class="modal fade" id="Add_Department" aria-hidden="true" role="dialog">
 			<div class="modal-dialog modal-dialog-centered" role="document">
 				<div class="modal-content">
 					<div class="modal-header">
-						<h5 class="modal-title">Add Addon</h5>
+						<h5 class="modal-title">Add Department</h5>
 						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 							<span aria-hidden="true">&times;</span>
 						</button>
 					</div>
 					<div class="modal-body">
-						<form method="POST" action="../../API/Admin/addNewAddon.php" id="addAddonForm" enctype="multipart/form-data">
+						<form method="POST" action="../../API/Admin/addNewDepartment.php" id="addDepartmentForm" enctype="multipart/form-data">
 							<div class="row form-row">
 
 								<div class="col-12">
 									<div class="form-group">
-										<label>Addon Name</label><label class="text-danger">*</label>
-										<input type="text" name="Addon_Name" class="form-control" required="">
+										<label>Department Name</label><label class="text-danger">*</label>
+										<input type="text" name="Department_Name" class="form-control" required="">
 									</div>
 								</div>
 
 								<div class="col-12">
 									<div class="form-group">
-										<label>Package Description</label><label class="text-danger">*</label>
-										<textarea id="add-text" name="Addon_description" class="form-control" rows="8" placeholder="Enter Description . . ."></textarea>
+										<label>Department Description</label><label class="text-danger">*</label>
+										<textarea id="add-text" name="Department_description" class="form-control" rows="8" placeholder="Enter Description . . ."></textarea>
 										<p id="count-result">0/250</p>
-									</div>
-								</div>
-
-								<div class="col-12">
-									<div class="form-group">
-										<label>Addon Price</label><label class="text-danger">*</label>
-										<div class="input-group">
-											<div class="input-group-prepend">
-												<span class="input-group-text">$</span>
-											</div>
-											<input type="number" name="Addon_Price" class="form-control text-right currency-input" min="1" step="any" required>
-										</div>
 									</div>
 								</div>
 
@@ -313,44 +300,32 @@ if (mysqli_num_rows($permission_query) > 0) {
 		<!-- Add Modal -->
 
 		<!-- Edit Details Modal-->
-		<div class="modal fade" id="Update_Addon" aria-hidden="true" role="dialog">
+		<div class="modal fade" id="Update_Department" aria-hidden="true" role="dialog">
 			<div class="modal-dialog modal-dialog-centered" role="document">
 				<div class="modal-content">
 					<div class="modal-header">
-						<h5 class="modal-title">Edit Addon Details</h5>
+						<h5 class="modal-title">Edit Department Details</h5>
 						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 							<span aria-hidden="true">&times;</span>
 						</button>
 					</div>
 					<div class="modal-body">
-						<form method="POST" action="../../API/Admin/updateAddon.php" id="updateAddonForm" enctype="multipart/form-data">
+						<form method="POST" action="../../API/Admin/updateDepartment.php" id="updateDepartmentForm" enctype="multipart/form-data">
 							<div class="row form-row">
 
 								<div class="col-12">
 									<div class="form-group">
-										<label>Addon Name</label><label class="text-danger">*</label>
+										<label>Department Name</label><label class="text-danger">*</label>
 										<input style="display:none;" type="text" name="Id" class="form-control" required="" readonly="true">
-										<input type="text" name="Addon_Name" class="form-control" required="">
+										<input type="text" name="Department_Name" class="form-control" required="">
 									</div>
 								</div>
 
 								<div class="col-12">
 									<div class="form-group">
-										<label>Addon_description</label><label class="text-danger">*</label>
-										<textarea id="edit-text" name="Addon_description" class="form-control" rows="8" placeholder="Enter Description . . ."></textarea>
+										<label>Addon Description</label><label class="text-danger">*</label>
+										<textarea id="edit-text" name="Department_description" class="form-control" rows="8" placeholder="Enter Description . . ."></textarea>
 										<p id="count-result">0/250</p>
-									</div>
-								</div>
-
-								<div class="col-12">
-									<div class="form-group">
-										<label>Addon Price</label><label class="text-danger">*</label>
-										<div class="input-group">
-											<div class="input-group-prepend">
-												<span class="input-group-text">$</span>
-											</div>
-											<input type="number" name="Addon_Price" class="form-control text-right currency-input" min="1" step="any" required="">
-										</div>
 									</div>
 								</div>
 
@@ -364,7 +339,7 @@ if (mysqli_num_rows($permission_query) > 0) {
 		<!--/Edit Details Modal -->
 
 		<!-- Delete Modal -->
-		<div class="modal fade" id="Delete_Addon" aria-hidden="true" role="dialog">
+		<div class="modal fade" id="Delete_Department" aria-hidden="true" role="dialog">
 			<div class="modal-dialog modal-dialog-centered" role="document">
 				<div class="modal-content">
 					<div class="modal-header">
@@ -375,10 +350,10 @@ if (mysqli_num_rows($permission_query) > 0) {
 					</div>
 					<div class="modal-body">
 						<div class="form-content p-2">
-							<h4 class="modal-title">Delete <span id="deleteAddonName"></span></h4>
+							<h4 class="modal-title">Delete <span id="deleteDepartmentName"></span></h4>
 							<p class="mb-4">Are you sure want to delete ?</p>
 
-							<form method="POST" action="../../API/Admin/deleteAddon.php" id="deleteAddonForm" enctype="multipart/form-data">
+							<form method="POST" action="../../API/Admin/deleteDepartment.php" id="deleteDepartmentForm" enctype="multipart/form-data">
 								<input style="display: none;" type="text" name="Id" required="" readonly="true">
 								<button type="submit" name="delete" class="btn btn-primary btn-block">Delete </button>
 							</form>
@@ -420,7 +395,7 @@ if (mysqli_num_rows($permission_query) > 0) {
 	<script>
 		// GLOBAL ALERT FUNCTIONS
 		function showSaveAlerts(response) {
-			$('#Add_Addon').modal('hide');
+			$('#Add_Department').modal('hide');
 
 			if (response.success === 'true') {
 				$('#SaveSuccessModel').modal('show');
@@ -432,7 +407,7 @@ if (mysqli_num_rows($permission_query) > 0) {
 		}
 
 		function showUpdateAlerts(response) {
-			$('#Update_Addon').modal('hide');
+			$('#Update_Department').modal('hide');
 
 			if (response.success === 'true') {
 				$('#UpdateSuccessModel').modal('show');
@@ -444,7 +419,7 @@ if (mysqli_num_rows($permission_query) > 0) {
 		}
 
 		function showDeleteAlerts(response) {
-			$('#Delete_Addon').modal('hide');
+			$('#Delete_Department').modal('hide');
 
 			if (response.success === 'true') {
 				$('#DeleteSuccessModel').modal('show');
@@ -470,7 +445,7 @@ if (mysqli_num_rows($permission_query) > 0) {
 			// DATA TABLE FETCH
 			$.ajax({
 				type: 'POST',
-				url: '../../API/Admin/getAllAddonData.php',
+				url: '../../API/Admin/getAllDepartmentData.php',
 				dataType: 'json',
 				success: function(data) {
 					if (data.length > 0) {
@@ -478,34 +453,23 @@ if (mysqli_num_rows($permission_query) > 0) {
 
 						var table = $('.datatable').DataTable({
 							searching: true,
-							columnDefs: [{
-									targets: 3,
-									className: 'text-right'
-								},
-								{
-									targets: 4,
-									className: 'text-center'
-								}
-							]
 						});
 
 						table.clear();
 
 						$.each(data, function(index, row) {
-							const formattedAddonPrice = '$' + row.Addon_Price;
-							const canEdit = <?php echo $has_access_to_edit_addon ? 'true' : 'false'; ?>;
-							const canDelete = <?php echo $has_access_to_delete_addon ? 'true' : 'false'; ?>;
+							const canEdit = <?php echo $has_access_to_edit_department ? 'true' : 'false'; ?>;
+							const canDelete = <?php echo $has_access_to_delete_department ? 'true' : 'false'; ?>;
 
 							let actionButtons = `<div class="actions">`;
 
 							if (canEdit) {
 								actionButtons += `
                                 <a href="javascript:void(0);"
-                                class="btn btn-sm bg-primary-light ms-1 edit-addon-btn"
+                                class="btn btn-sm bg-primary-light ms-1 edit-department-btn"
                                 data-id="${row.Id}"
-                                data-name="${row.Addon_Name}"
-                                data-description="${encodeURIComponent(row.Addon_description)}"
-                                data-price="${row.Addon_Price}">
+                                data-name="${row.Department_Name}"
+                                data-description="${encodeURIComponent(row.Department_description)}">
                                     <i class="fe fe-pencil"></i> Edit
                                 </a>`;
 							}
@@ -513,9 +477,9 @@ if (mysqli_num_rows($permission_query) > 0) {
 							if (canDelete) {
 								actionButtons += `
                                 <a href="javascript:void(0);"
-                                class="btn btn-sm bg-danger-light ms-1 delete-addon-btn"
+                                class="btn btn-sm bg-danger-light ms-1 delete-department-btn"
                                 data-id="${row.Id}"
-                                data-name="${row.Addon_Name}">
+                                data-name="${row.Department_Name}">
                                     <i class="fe fe-trash"></i> Delete
                                 </a>`;
 							}
@@ -524,23 +488,22 @@ if (mysqli_num_rows($permission_query) > 0) {
 
 							table.row.add([
 								row.Id,
-								row.Addon_Name,
-								row.Addon_description,
-								formattedAddonPrice,
+								row.Department_Name,
+								row.Department_description,
 								actionButtons
 							]);
 						});
 
 						// After table initialization, hide the column if all actionButtons are empty
-						if (!<?php echo ($has_access_to_edit_addon || $has_access_to_delete_addon) ? 'true' : 'false'; ?>) {
-							$('.datatable').DataTable().column(4).visible(false); // Hide Actions column
+						if (!<?php echo ($has_access_to_edit_department || $has_access_to_delete_department) ? 'true' : 'false'; ?>) {
+							$('.datatable').DataTable().column(3).visible(false); // Hide Actions column
 						}
 
 						table.draw();
 					}
 				},
 				error: function(xhr, status, error) {
-					console.error('Error fetching addons:', status, error);
+					console.error('Error fetching departments:', status, error);
 				}
 			});
 
@@ -576,19 +539,19 @@ if (mysqli_num_rows($permission_query) > 0) {
 				});
 			}
 
-			initTinyMCE('#add-text', '#Add_Addon #count-result');
-			initTinyMCE('#edit-text', '#Update_Addon #count-result');
+			initTinyMCE('#add-text', '#Add_Department #count-result');
+			initTinyMCE('#edit-text', '#Update_Department #count-result');
 
-			// ADD ADDON
-			$('#addAddonForm').submit(function(e) {
+			// ADD DEPARTMENT
+			$('#addDepartmentForm').submit(function(e) {
 				e.preventDefault();
 				let descriptionText = tinymce.get('add-text').getContent({
 					format: 'text'
 				}).trim();
 
 				if (!descriptionText.length) {
-					$('#Add_Addon').modal('hide');
-					$('#EmptyAddon').modal('show');
+					$('#Add_Department').modal('hide');
+					$('#EmptyDepartment').modal('show');
 					tinymce.get('add-text').focus();
 					return false;
 				}
@@ -598,14 +561,14 @@ if (mysqli_num_rows($permission_query) > 0) {
 
 				$.ajax({
 					type: 'POST',
-					url: '../../API/Admin/addNewAddon.php',
+					url: '../../API/Admin/addNewDepartment.php',
 					data: $(this).serialize(),
 					success: function(response) {
 						if (typeof response === 'string') response = JSON.parse(response);
 						showSaveAlerts(response);
 					},
 					error: function() {
-						$('#Add_Addon').modal('hide');
+						$('#Add_Department').modal('hide');
 						$('#SaveFailedModel').modal('show');
 					},
 					complete: function() {
@@ -615,38 +578,36 @@ if (mysqli_num_rows($permission_query) > 0) {
 			});
 
 			$('#SaveSuccessModel #OkBtn').click(function() {
-				window.location.href = 'add_addons.php';
+				window.location.href = 'add_departments.php';
 			});
 
-			// EDIT ADDON
-			$(document).on('click', '.edit-addon-btn', function() {
+			// EDIT DEPARTMENT
+			$(document).on('click', '.edit-department-btn', function() {
 				const Id = $(this).data('id');
-				const addonName = $(this).data('name');
-				const addonDesc = decodeURIComponent($(this).data('description') || '');
-				const addonPrice = $(this).data('price');
+				const departmentName = $(this).data('name');
+				const departmentDesc = decodeURIComponent($(this).data('description') || '');
 
-				$('#Update_Addon input[name="Id"]').val(Id);
-				$('#Update_Addon input[name="Addon_Name"]').val(addonName);
-				$('#Update_Addon input[name="Addon_Price"]').val(addonPrice);
+				$('#Update_Department input[name="Id"]').val(Id);
+				$('#Update_Department input[name="Department_Name"]').val(departmentName);
 
 				if (tinymce.get('edit-text')) {
-					tinymce.get('edit-text').setContent(addonDesc);
+					tinymce.get('edit-text').setContent(departmentDesc);
 				}
 
-				const textLength = addonDesc.replace(/<[^>]*>/g, '').length;
-				$('#Update_Addon #count-result').text(`${textLength} / 250`);
-				$('#Update_Addon').modal('show');
+				const textLength = departmentDesc.replace(/<[^>]*>/g, '').length;
+				$('#Update_Department #count-result').text(`${textLength} / 250`);
+				$('#Update_Department').modal('show');
 			});
 
-			$('#updateAddonForm').submit(function(e) {
+			$('#updateDepartmentForm').submit(function(e) {
 				e.preventDefault();
 				let descriptionText = tinymce.get('edit-text').getContent({
 					format: 'text'
 				}).trim();
 
 				if (!descriptionText.length) {
-					$('#Update_Addon').modal('hide');
-					$('#EmptyAddon').modal('show');
+					$('#Update_Department').modal('hide');
+					$('#EmptyDepartment').modal('show');
 					tinymce.get('edit-text').focus();
 					return false;
 				}
@@ -656,7 +617,7 @@ if (mysqli_num_rows($permission_query) > 0) {
 
 				$.ajax({
 					type: 'POST',
-					url: '../../API/Admin/updateAddon.php',
+					url: '../../API/Admin/updateDepartment.php',
 					data: $(this).serialize(),
 					success: function(response) {
 						if (typeof response === 'string') response = JSON.parse(response);
@@ -665,7 +626,7 @@ if (mysqli_num_rows($permission_query) > 0) {
 					},
 					error: function(xhr, status, error) {
 						console.error('Error:', status, error);
-						$('#Update_Addon').modal('hide');
+						$('#Update_Department').modal('hide');
 						$('#UpdateFailedModel').modal('show');
 					},
 					complete: function() {
@@ -675,26 +636,26 @@ if (mysqli_num_rows($permission_query) > 0) {
 			});
 
 			$('#UpdateSuccessModel #OkBtn').click(function() {
-				window.location.href = 'add_addons.php';
+				window.location.href = 'add_departments.php';
 			});
 
-			// DELETE ADDON
-			$(document).on('click', '.delete-addon-btn', function() {
+			// DELETE DEPARTMENT
+			$(document).on('click', '.delete-department-btn', function() {
 				const Id = $(this).data('id');
-				const addonName = $(this).data('name');
+				const departmentName = $(this).data('name');
 
-				$('#Delete_Addon input[name="Id"]').val(Id);
-				$('#deleteAddonName').text(addonName);
-				$('#Delete_Addon').modal('show');
+				$('#Delete_Department input[name="Id"]').val(Id);
+				$('#deleteDepartmentName').text(departmentName);
+				$('#Delete_Department').modal('show');
 			});
 
-			$('#deleteAddonForm').submit(function(e) {
+			$('#deleteDepartmentForm').submit(function(e) {
 				e.preventDefault();
 				$('#pageLoader').show();
 
 				$.ajax({
 					type: 'POST',
-					url: '../../API/Admin/deleteAddon.php',
+					url: '../../API/Admin/deleteDepartment.php',
 					data: $(this).serialize(),
 					success: function(response) {
 						if (typeof response === 'string') response = JSON.parse(response);
@@ -703,7 +664,7 @@ if (mysqli_num_rows($permission_query) > 0) {
 					},
 					error: function(xhr, status, error) {
 						console.error('Error:', status, error);
-						$('#Delete_Addon').modal('hide');
+						$('#Delete_Department').modal('hide');
 						$('#DeleteFailedModel').modal('show');
 					},
 					complete: function() {
@@ -713,7 +674,7 @@ if (mysqli_num_rows($permission_query) > 0) {
 			});
 
 			$('#DeleteSuccessModel #OkBtn').click(function() {
-				window.location.href = 'add_addons.php';
+				window.location.href = 'add_departments.php';
 			});
 
 			// CURRENCY INPUT VALIDATION
