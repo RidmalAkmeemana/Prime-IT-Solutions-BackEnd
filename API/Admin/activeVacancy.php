@@ -2,22 +2,25 @@
 
 require '../../API/Connection/BackEndPermission.php';
 
-$Order_Id = $_POST['Order_Id'];
+$Vacancy_Id = $_POST['Vacancy_Id'];
+$Is_Active = $_POST['Is_Active'];
 
-if (empty($Order_Id)) {
+if (!isset($Vacancy_Id) || !isset($Is_Active)) {
     $myObj = new \stdClass();
     $myObj->success = 'false';
     $myObj->error = 'empty';
     $myJSON = json_encode($myObj);
     echo $myJSON;
-} else {
-    // Check if Order_Id exists in the database
-    $checkQuery = "SELECT * FROM `tbl_orders` WHERE `tbl_orders`.`Order_Id` = '$Order_Id';";
+} 
+else {
+    
+    // Check if Vacancy_Id exists in the database
+    $checkQuery = "SELECT * FROM `tbl_vacancies` WHERE `tbl_vacancies`.`Vacancy_Id` = '$Vacancy_Id';";
     $result = mysqli_query($conn, $checkQuery);
 
     if (mysqli_num_rows($result) > 0) {
-        // If Order_Id exists, perform the delete
-        $updateQuery = "DELETE FROM tbl_orders WHERE Order_Id = '$Order_Id';";
+        // If Vacancy_Id exists, perform the update
+        $updateQuery = "UPDATE `tbl_vacancies` SET `Is_Active` = '$Is_Active' WHERE `tbl_vacancies`.`Vacancy_Id` = '$Vacancy_Id';";
         if (mysqli_query($conn, $updateQuery)) {
             $myObj = new \stdClass();
             $myObj->success = 'true';
@@ -30,10 +33,10 @@ if (empty($Order_Id)) {
             echo $myJSON;
         }
     } else {
-        // If Order_Id doesn't exist, send appropriate response
+        // If Id doesn't exist, send appropriate response
         $myObj = new \stdClass();
         $myObj->success = 'false';
-        $myObj->error = 'no_order_data';
+        $myObj->error = 'no_vacancy_data';
         $myJSON = json_encode($myObj);
         echo $myJSON;
     }

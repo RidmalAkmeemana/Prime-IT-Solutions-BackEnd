@@ -203,6 +203,23 @@
     </div>
 </div>
 
+<div class="modal fade" id="EmptyDescription" role="dialog">
+    <div class="modal-dialog modal-dialog-centered">
+        <!-- Modal content-->
+        <div class="modal-content text-center">
+            <div class="modal-body mt-4">
+                <i class="fa fa-exclamation-circle animate__animated animate__tada animate__infinite" style="font-size: 100px; margin-top:20px; color:#e63c3c;" aria-hidden="true"></i>
+                <h3 class="modal-title"><b>Error</b></h3>
+                <p>Job Description is Required !</p>
+            </div>
+            <div class="modal-body">
+                <button style="width:20%;" type="button" class="btn btn-primary" id="OkBtn" data-dismiss="modal">OK</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
 <div class="modal fade" id="PermissionSuccessModel" role="dialog">
     <div class="modal-dialog modal-dialog-centered">
         <!-- Modal content-->

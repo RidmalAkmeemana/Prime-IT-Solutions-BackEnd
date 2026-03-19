@@ -275,28 +275,6 @@ if (mysqli_num_rows($permission_query) > 0) {
 						</div>
 
 						<div class="col-md-12 text-left mt-4">
-							<h5 class="page-title">
-								<h5 class="tag-cloud text-xs font-weight-bold mb-1">Recent Invoices</h5>
-							</h5>
-							<br><br>
-							<div class="table-responsive">
-								<table class="datatable table table-hover table-center mb-0">
-									<thead>
-										<tr>
-											<th>Order ID</th>
-											<th>Package Name</th>
-											<th>Event Location</th>
-											<th>Event Date & Time</th>
-											<th>Status</th>
-											<th>Order Date & Time</th>
-										</tr>
-									</thead>
-
-									<tbody id="orderList">
-										<!-- Data will be populated here -->
-									</tbody>
-								</table>
-							</div>
 							<!-- Back Button -->
 							<div class="form-group text-right mt-5">
 								<button onclick="window.history.back();" class="btn btn-back"><i class="fa fa-arrow-left" aria-hidden="true"></i> Back to List</button>
@@ -545,50 +523,6 @@ if (mysqli_num_rows($permission_query) > 0) {
 							}
 
 							initTinyMCE('#edit-text', '#Update_Customer #count-result');
-
-							// Destroy existing DataTable, if any
-							$('.datatable').DataTable().destroy();
-
-							// Initialize DataTable
-							var table = $('.datatable').DataTable({
-								searching: true, // Enable search
-							});
-
-							// Clear existing rows
-							table.clear();
-
-							// Populate invoice list
-							if (response.orders.length > 0) {
-								$.each(response.orders, function(index, order) {
-
-									let statusBadge = '';
-									if (order.Status === 'Completed') {
-										statusBadge = '<span class="badge badge-primary">Completed</span>';
-									} else if (order.Status === 'Pending') {
-										statusBadge = '<span class="badge badge-warning">Pending</span>';
-									} else if (order.Status === 'Rejected') {
-										statusBadge = '<span class="badge badge-secondary">Rejected</span>';
-									} else if (order.Status === 'Approved') {
-										statusBadge = '<span class="badge badge-info">Approved</span>';
-									} else if (order.Status === 'Canceled') {
-										statusBadge = '<span class="badge badge-danger">Canceled</span>';
-									}
-
-									table.row.add([
-										order.Order_Id,
-										order.Package_Name,
-										order.Event_Location,
-										order.Event_DateTime,
-										statusBadge,
-										order.Order_Date
-									]);
-								});
-							} else {
-								console.log('No data received.');
-							}
-
-							// Draw the table
-							table.draw();
 						},
 						error: function(xhr, status, error) {
 							console.error('Error:', status, error);

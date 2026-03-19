@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 06, 2026 at 10:21 AM
+-- Generation Time: Feb 19, 2026 at 04:17 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.0.30
 
@@ -18,31 +18,8 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `db_bloomdecous`
+-- Database: `db_prime_it`
 --
-
--- --------------------------------------------------------
-
---
--- Table structure for table `tbl_addon`
---
-
-CREATE TABLE `tbl_addon` (
-  `Id` int(11) NOT NULL,
-  `Addon_Name` varchar(50) NOT NULL,
-  `Addon_description` varchar(250) NOT NULL,
-  `Addon_Price` float(10,2) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `tbl_addon`
---
-
-INSERT INTO `tbl_addon` (`Id`, `Addon_Name`, `Addon_description`, `Addon_Price`) VALUES
-(1, 'Balloon Centerpieces', '<p>balloon centerpieces $35up</p>', 35.00),
-(2, 'Flower Centerpieces', '<p>flower centerpieces $40 up</p>', 12.00),
-(4, 'Welcome Sign size 18”by 24”', '<p>Welcome Sign size 18&rdquo;by 24&rdquo; $60 and up</p>', 60.00),
-(5, 'Love Seat', '<p>Love Seat $100</p>', 100.00);
 
 -- --------------------------------------------------------
 
@@ -81,22 +58,21 @@ INSERT INTO `tbl_backend` (`Backend_Id`, `Backend_Name`, `Screen_Category`, `Scr
 (173, 'updateCompany.php', 'System Information', 'View'),
 (174, 'getSystemConfiguration.php', 'System Information', 'View'),
 (175, 'updateConfiguration.php', 'System Information', 'View'),
-(188, 'getAllPackageData.php', 'Packages', 'View'),
-(189, 'getPackageDetails.php', 'Packages', 'Add'),
-(190, 'addNewPackage.php', 'Packages', 'Add'),
-(191, 'updatePackage.php', 'Packages', 'Edit'),
-(192, 'deletePackage.php', 'Packages', 'Delete'),
-(194, 'addNewAddon.php', 'Addons', 'Add'),
-(195, 'getAllAddonData.php', 'Addons', 'View'),
-(196, 'updateAddon.php', 'Addons', 'Edit'),
-(197, 'deleteAddon.php', 'Addons', 'Delete'),
+(194, 'addNewDepartment.php', 'Departments', 'Add'),
+(195, 'getAllDepartmentData.php', 'Departments', 'View'),
+(196, 'updateDepartment.php', 'Departments', 'Edit'),
+(197, 'deleteDepartment.php', 'Departments', 'Delete'),
 (198, 'getAllOrderData.php', 'Orders', 'View'),
 (199, 'viewOrderData.php', 'Orders', 'View'),
 (200, 'updateOrder.php', 'Orders', 'Edit'),
 (201, 'deleteOrder.php', 'Orders', 'Delete'),
 (202, 'getAllReviewsData.php', 'Reviews', 'View'),
 (203, 'updateReview.php', 'Reviews', 'Edit'),
-(204, 'deleteReview.php', 'Reviews', 'Delete');
+(204, 'deleteReview.php', 'Reviews', 'Delete'),
+(205, 'addNewLocation.php', 'Locations', 'Add'),
+(206, 'getAllLocationData.php', 'Locations', 'View'),
+(207, 'updatelocation.php', 'Locations', 'Edit'),
+(208, 'deleteLocation.php', 'Locations', 'Delete');
 
 -- --------------------------------------------------------
 
@@ -125,13 +101,6 @@ INSERT INTO `tbl_backend_permissions` (`Permission_Id`, `Role`, `Backend_Id`) VA
 (1088, 'Super Admin', 173),
 (1089, 'Super Admin', 174),
 (1090, 'Super Admin', 175),
-(1091, 'Super Admin', 188),
-(1092, 'Super Admin', 189),
-(1093, 'Super Admin', 190),
-(1094, 'Super Admin', 191),
-(1095, 'Super Admin', 192),
-(1096, 'Super Admin', 194),
-(1097, 'Super Admin', 195),
 (1098, 'Super Admin', 196),
 (1099, 'Super Admin', 197),
 (1132, 'Super Admin', 110),
@@ -149,7 +118,13 @@ INSERT INTO `tbl_backend_permissions` (`Permission_Id`, `Role`, `Backend_Id`) VA
 (1231, 'Super Admin', 200),
 (1235, 'Super Admin', 204),
 (1236, 'Super Admin', 202),
-(1237, 'Super Admin', 203);
+(1237, 'Super Admin', 203),
+(1238, 'Super Admin', 194),
+(1239, 'Super Admin', 195),
+(1240, 'Super Admin', 205),
+(1241, 'Super Admin', 208),
+(1242, 'Super Admin', 206),
+(1243, 'Super Admin', 207);
 
 -- --------------------------------------------------------
 
@@ -172,7 +147,7 @@ CREATE TABLE `tbl_company_info` (
 --
 
 INSERT INTO `tbl_company_info` (`Id`, `Company_Name`, `Company_Address`, `Company_Email`, `Company_Tel1`, `Company_Tel2`, `Company_Tel3`) VALUES
-(1, 'Bloom Decous', 'New York, NY, United States, New York 10306', 'orbissolutionslk@gmail.com', '+1 929-421-6047', NULL, NULL);
+(1, 'Prime IT Solutions Private Limited', 'No. 36, Nugegoda Road, Pepiliyana, Sri Lanka', 'orbissolutionslk@gmail.com', '+94 (11) 5 672 ', '+94 (11) 5 752 ', NULL);
 
 -- --------------------------------------------------------
 
@@ -213,7 +188,61 @@ INSERT INTO `tbl_customers` (`Id`, `Customer_Id`, `Customer_Name`, `Customer_Add
 (25, 'CUS0005', 'Dulan Malintha', 'Digana Rd, Kottawa', '0773697071', 'dulan@gmail.com'),
 (26, 'CUS0006', 'Nilesh Akmeemana', '570/4, Erewwala, Pannipitiya', '0787223917', 'nileshnirmalakmeemana@gmail.com'),
 (28, 'CUS0008', 'C.M.F Sriyana', 'Rotuphilla Akiriya', '0774569898', 'sriyana@gmail.com'),
-(29, 'CUS0009', 'Gayan Akmeemana', '570/4, Pathalwatte Rd, Erewwala, Pannipitiya', '0766061234', 'gayanakmeemana@yahoo.com');
+(29, 'CUS0009', 'Gayan Akmeemana', '570/4, Pathalwatte Rd, Erewwala, Pannipitiya', '0766061234', 'gayanakmeemana@yahoo.com'),
+(30, 'CUS0010', 'Ruwan Weerasuriya', '<p>Air Resources Management Center, Sri Lanka</p>', '0774569870', 'test@gmail.com'),
+(31, 'CUS0011', 'Kasun Chanuka', '666 Parramatta Road, Croydon NSW 2132', '0774569873', 'kasun@gmail.com'),
+(32, 'CUS0012', 'Gayan', '170 Charles Street', '0773697072', 'gayan@gmail.com'),
+(33, 'CUS0013', 'Ridmal Akmeemana', '666 Parramatta Road, Croydon NSW 2132', '07736970706', 'test@test.com');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tbl_departments`
+--
+
+CREATE TABLE `tbl_departments` (
+  `Id` int(11) NOT NULL,
+  `Department_Name` varchar(50) NOT NULL,
+  `Department_description` varchar(250) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `tbl_departments`
+--
+
+INSERT INTO `tbl_departments` (`Id`, `Department_Name`, `Department_description`) VALUES
+(12, 'Software Development', '<p>Designs, develops, tests, and maintains software applications and systems for clients or internal use.</p>'),
+(13, 'Quality Assurance', '<p>Ensures software quality by testing applications, identifying bugs, and verifying performance before release.</p>'),
+(14, 'Cybersecurity', '<p>Protects systems, networks, and data from cyber threats, attacks, and unauthorized access.</p>'),
+(15, 'Network & Infrastructure', '<p>Manages servers, networks, cloud systems, and ensures stable connectivity and performance.</p>'),
+(16, 'Research & Development', '<p>Explores new technologies, tools, and innovations to improve products and services.</p>'),
+(17, 'Project Management', '<p>Plans, manages, and monitors IT projects to ensure they are completed on time and within budget.</p>'),
+(18, 'Business Analysis', '<p>Analyzes business needs and translates them into technical requirements for development teams.</p>'),
+(19, 'Customer Support', '<p>Provides timely assistance ensuring customer satisfaction and maintaining strong client relationships.</p>');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tbl_locations`
+--
+
+CREATE TABLE `tbl_locations` (
+  `Id` int(11) NOT NULL,
+  `Postal_Code` varchar(50) NOT NULL,
+  `Location_Name` varchar(50) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `tbl_locations`
+--
+
+INSERT INTO `tbl_locations` (`Id`, `Postal_Code`, `Location_Name`) VALUES
+(1, '10230', 'Erewwala'),
+(2, '10280', 'Maharagama'),
+(3, '11450', 'Katunayake'),
+(4, '00900', 'Dematagoda'),
+(5, 'REMT', 'Remote'),
+(9, '10360', 'Panadura');
 
 -- --------------------------------------------------------
 
@@ -258,22 +287,6 @@ CREATE TABLE `tbl_order_addons` (
   `Addon_Id` int(11) NOT NULL,
   `Addon_Price` float(10,2) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `tbl_order_addons`
---
-
-INSERT INTO `tbl_order_addons` (`Id`, `Order_Id`, `Addon_Id`, `Addon_Price`) VALUES
-(185, 'ORD0001', 1, 35.00),
-(186, 'ORD0001', 5, 100.00),
-(187, 'ORD0004', 1, 35.00),
-(188, 'ORD0004', 2, 12.00),
-(189, 'ORD0005', 2, 12.00),
-(190, 'ORD0005', 4, 60.00),
-(191, 'ORD0006', 1, 35.00),
-(192, 'ORD0006', 2, 12.00),
-(193, 'ORD0007', 1, 35.00),
-(194, 'ORD0007', 2, 12.00);
 
 -- --------------------------------------------------------
 
@@ -321,7 +334,12 @@ CREATE TABLE `tbl_reviews` (
 
 INSERT INTO `tbl_reviews` (`Id`, `Customer_Id`, `Star_Rating`, `Message`, `Is_Approved`, `Created_Date`) VALUES
 (5, 'CUS0008', 4, 'Highly Recomended', 1, '2026-01-05 23:42:46'),
-(7, 'CUS0005', 3, 'Best', 1, '2026-01-06 14:04:44');
+(7, 'CUS0005', 3, 'Best', 1, '2026-01-06 14:04:44'),
+(8, 'CUS0010', 5, 'Prime IT Solutions showed professionalism and outstanding developer efficiency. Any questions and problems, arising during the development cycle, were attended to by Prime specialists in a timely fashion leaving no unresolved issues.Prime team always remained responsive, demonstrated great communicative skills and ensured smooth interaction throughout all development and implementation stages, suggesting articulate and consistent decisions and viable solutions for our project.Prime ensured fast finalization of our project and fully met our expectations, concerning the time to bring the new features to our clients. We won\'t hesitate to turn to Prime services again and hope for further fruitful collaboration.', 1, '2026-02-07 07:03:25'),
+(12, 'CUS0011', 4, 'Best', 1, '2026-02-13 22:31:01'),
+(15, 'CUS0011', 5, 'Test', 1, '2026-02-13 22:56:57'),
+(16, 'CUS0010', 5, 'Tes123456', 1, '2026-02-15 22:18:59'),
+(17, 'CUS0010', 3, 'Test7', 1, '2026-02-15 22:20:15');
 
 -- --------------------------------------------------------
 
@@ -367,11 +385,11 @@ INSERT INTO `tbl_screens` (`Screen_Id`, `Screen_Name`, `Screen_Category`, `Scree
 (311, 'view_role.php', 'Roles', 'View'),
 (312, 'add_users.php', 'Users', 'View'),
 (333, 'settings.php', 'System Information', 'View'),
-(346, 'add_packages.php', 'Packages', 'View'),
-(348, 'add_addons.php', 'Addons', 'View'),
+(348, 'add_departments.php', 'Departments', 'View'),
 (350, 'orders.php', 'Orders', 'View'),
 (351, 'view_order.php', 'Orders', 'View'),
-(352, 'reviews.php', 'Reviews', 'View');
+(352, 'reviews.php', 'Reviews', 'View'),
+(353, 'add_locations.php', 'Locations', 'View');
 
 -- --------------------------------------------------------
 
@@ -393,14 +411,14 @@ INSERT INTO `tbl_screen_permissions` (`Permission_Id`, `Role`, `Screen_Id`) VALU
 (375, 'Super Admin', 310),
 (376, 'Super Admin', 311),
 (495, 'Super Admin', 333),
-(496, 'Super Admin', 346),
-(497, 'Super Admin', 348),
 (507, 'Super Admin', 303),
 (517, 'Super Admin', 307),
 (518, 'Super Admin', 312),
 (542, 'Super Admin', 350),
 (543, 'Super Admin', 351),
-(545, 'Super Admin', 352);
+(545, 'Super Admin', 352),
+(546, 'Super Admin', 348),
+(547, 'Super Admin', 353);
 
 -- --------------------------------------------------------
 
@@ -452,13 +470,6 @@ INSERT INTO `tbl_user` (`Id`, `First_Name`, `Last_Name`, `Username`, `Password`,
 --
 
 --
--- Indexes for table `tbl_addon`
---
-ALTER TABLE `tbl_addon`
-  ADD PRIMARY KEY (`Id`),
-  ADD UNIQUE KEY `Addon_Name` (`Addon_Name`);
-
---
 -- Indexes for table `tbl_backend`
 --
 ALTER TABLE `tbl_backend`
@@ -492,6 +503,21 @@ ALTER TABLE `tbl_customers`
   ADD PRIMARY KEY (`Id`),
   ADD UNIQUE KEY `Customer_Id` (`Customer_Id`),
   ADD UNIQUE KEY `Customer_Contact` (`Customer_Contact`,`Customer_Email`);
+
+--
+-- Indexes for table `tbl_departments`
+--
+ALTER TABLE `tbl_departments`
+  ADD PRIMARY KEY (`Id`),
+  ADD UNIQUE KEY `Addon_Name` (`Department_Name`);
+
+--
+-- Indexes for table `tbl_locations`
+--
+ALTER TABLE `tbl_locations`
+  ADD PRIMARY KEY (`Id`),
+  ADD UNIQUE KEY `Postal_Code` (`Postal_Code`),
+  ADD UNIQUE KEY `Location_Name` (`Location_Name`);
 
 --
 -- Indexes for table `tbl_orders`
@@ -565,22 +591,16 @@ ALTER TABLE `tbl_user`
 --
 
 --
--- AUTO_INCREMENT for table `tbl_addon`
---
-ALTER TABLE `tbl_addon`
-  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
-
---
 -- AUTO_INCREMENT for table `tbl_backend`
 --
 ALTER TABLE `tbl_backend`
-  MODIFY `Backend_Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=205;
+  MODIFY `Backend_Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=209;
 
 --
 -- AUTO_INCREMENT for table `tbl_backend_permissions`
 --
 ALTER TABLE `tbl_backend_permissions`
-  MODIFY `Permission_Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1238;
+  MODIFY `Permission_Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1244;
 
 --
 -- AUTO_INCREMENT for table `tbl_company_info`
@@ -598,7 +618,19 @@ ALTER TABLE `tbl_contact`
 -- AUTO_INCREMENT for table `tbl_customers`
 --
 ALTER TABLE `tbl_customers`
-  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
+  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
+
+--
+-- AUTO_INCREMENT for table `tbl_departments`
+--
+ALTER TABLE `tbl_departments`
+  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+
+--
+-- AUTO_INCREMENT for table `tbl_locations`
+--
+ALTER TABLE `tbl_locations`
+  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `tbl_orders`
@@ -622,25 +654,25 @@ ALTER TABLE `tbl_package`
 -- AUTO_INCREMENT for table `tbl_reviews`
 --
 ALTER TABLE `tbl_reviews`
-  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
 -- AUTO_INCREMENT for table `tbl_roles`
 --
 ALTER TABLE `tbl_roles`
-  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
 -- AUTO_INCREMENT for table `tbl_screens`
 --
 ALTER TABLE `tbl_screens`
-  MODIFY `Screen_Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=353;
+  MODIFY `Screen_Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=354;
 
 --
 -- AUTO_INCREMENT for table `tbl_screen_permissions`
 --
 ALTER TABLE `tbl_screen_permissions`
-  MODIFY `Permission_Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=546;
+  MODIFY `Permission_Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=548;
 
 --
 -- AUTO_INCREMENT for table `tbl_system_configuration`
@@ -675,7 +707,7 @@ ALTER TABLE `tbl_orders`
 -- Constraints for table `tbl_order_addons`
 --
 ALTER TABLE `tbl_order_addons`
-  ADD CONSTRAINT `tbl_order_addons_ibfk_1` FOREIGN KEY (`Addon_Id`) REFERENCES `tbl_addon` (`Id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `tbl_order_addons_ibfk_1` FOREIGN KEY (`Addon_Id`) REFERENCES `tbl_departments` (`Id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `tbl_order_addons_ibfk_2` FOREIGN KEY (`Order_Id`) REFERENCES `tbl_orders` (`Order_Id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --

@@ -20,39 +20,36 @@ $query = mysqli_query($conn, "SELECT * FROM `tbl_user` WHERE `username` = '$user
 $fetch = mysqli_fetch_array($query);
 $user_status = $fetch['Status'];
 
-// Check if user has access to addNewUser.php
-$has_access_to_add_user = false;
-$permission_query = mysqli_query($conn, "SELECT * FROM `tbl_backend_permissions` WHERE `Role` = '$user_status' AND `Backend_Id` = 132") or die(mysqli_error());
+// Check if user has access to addNewType.php
+$has_access_to_add_type = false;
+$permission_query = mysqli_query($conn, "SELECT * FROM `tbl_backend_permissions` WHERE `Role` = '$user_status' AND `Backend_Id` = 209") or die(mysqli_error());
 if (mysqli_num_rows($permission_query) > 0) {
-	$has_access_to_add_user = true;
+	$has_access_to_add_type = true;
 }
 
-// Check if user has access to updateUser.php
-$has_access_to_edit_user = false;
-$permission_query = mysqli_query($conn, "SELECT * FROM `tbl_backend_permissions` WHERE `Role` = '$user_status' AND `Backend_Id` = 134") or die(mysqli_error());
+// Check if user has access to updateType.php
+$has_access_to_edit_type = false;
+$permission_query = mysqli_query($conn, "SELECT * FROM `tbl_backend_permissions` WHERE `Role` = '$user_status' AND `Backend_Id` = 211") or die(mysqli_error());
 if (mysqli_num_rows($permission_query) > 0) {
-	$has_access_to_edit_user = true;
+	$has_access_to_edit_type = true;
 }
 
-// Check if user has access to deleteUser.php
-$has_access_to_delete_user = false;
-$permission_query = mysqli_query($conn, "SELECT * FROM `tbl_backend_permissions` WHERE `Role` = '$user_status' AND `Backend_Id` = 135") or die(mysqli_error());
+// Check if user has access to deleteType.php
+$has_access_to_delete_type = false;
+$permission_query = mysqli_query($conn, "SELECT * FROM `tbl_backend_permissions` WHERE `Role` = '$user_status' AND `Backend_Id` = 212") or die(mysqli_error());
 if (mysqli_num_rows($permission_query) > 0) {
-	$has_access_to_delete_user = true;
+	$has_access_to_delete_type = true;
 }
 
 ?>
 
-
 <!DOCTYPE html>
 <html lang="en">
-
-<!-- Mirrored from dreamguys.co.in/demo/doccure/admin/specialities.html by HTTrack Website Copier/3.x [XR&CO'2014], Sat, 30 Nov 2019 04:12:49 GMT -->
 
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
-	<title><?php echo ($companyName); ?> - Users</title>
+	<title><?php echo ($companyName); ?> - Job Types</title>
 
 	<!-- Favicon -->
 	<link rel="shortcut icon" type="image/x-icon" href="assets/img/favicon.png">
@@ -75,11 +72,6 @@ if (mysqli_num_rows($permission_query) > 0) {
 
 	<!-- Select2 CSS -->
 	<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
-
-	<!--[if lt IE 9]>
-			<script src="assets/js/html5shiv.min.js"></script>
-			<script src="assets/js/respond.min.js"></script>
-		<![endif]-->
 
 	<style>
 		.select2-container--default .select2-selection--single {
@@ -217,17 +209,17 @@ if (mysqli_num_rows($permission_query) > 0) {
 				<div class="page-header">
 					<div class="row">
 						<div class="col-sm-7 col-auto">
-							<h3 class="page-title">Users</h3>
+							<h3 class="page-title">Job Types</h3>
 							<ul class="breadcrumb">
 								<li class="breadcrumb-item"><a href="home.php">Dashboard</a></li>
-								<li class="breadcrumb-item active">Users</li>
+								<li class="breadcrumb-item active">Job Types</li>
 							</ul>
 						</div>
 						<div class="col-sm-5 col">
-							<?php if ($has_access_to_add_user): ?>
-								<a href="#Add_User" data-toggle="modal" class="btn btn-primary float-right mt-2"> <i class="fa fa-plus-square" aria-hidden="true"></i> Add New User</a>
+							<?php if ($has_access_to_add_type): ?>
+								<a href="#Add_Type" data-toggle="modal" class="btn btn-primary float-right mt-2"> <i class="fa fa-plus-square" aria-hidden="true"></i> Add New Job Type</a>
 							<?php else: ?>
-								<a style="display:none;" href="#" data-toggle="modal" class="btn btn-primary float-right mt-2"> <i class="fa fa-plus-square" aria-hidden="true"></i> Add New User</a>
+								<a style="display:none;" href="#" data-toggle="modal" class="btn btn-primary float-right mt-2"> <i class="fa fa-plus-square" aria-hidden="true"></i> Add New Job Type</a>
 							<?php endif; ?>
 						</div>
 					</div>
@@ -239,12 +231,6 @@ if (mysqli_num_rows($permission_query) > 0) {
 				?>
 				<!-- /Model Alerts -->
 
-				<!-- /Image Preview -->
-				<?php
-				require '../Models/imagePreview.php';
-				?>
-				<!-- /Image Preview -->
-
 				<!-- /Page Header -->
 				<div class="row">
 					<div class="col-sm-12">
@@ -255,9 +241,7 @@ if (mysqli_num_rows($permission_query) > 0) {
 										<thead>
 											<tr>
 												<th>#</th>
-												<th>Name of Users</th>
-												<th>Role</th>
-												<th>Username</th>
+												<th>Job Type</th>
 												<th>Action</th>
 											</tr>
 										</thead>
@@ -277,71 +261,24 @@ if (mysqli_num_rows($permission_query) > 0) {
 
 
 		<!-- Add Modal -->
-		<div class="modal fade" id="Add_User" aria-hidden="true" role="dialog">
+		<div class="modal fade" id="Add_Type" aria-hidden="true" role="dialog">
 			<div class="modal-dialog modal-dialog-centered" role="document">
 				<div class="modal-content">
 					<div class="modal-header">
-						<h5 class="modal-title">Add User</h5>
+						<h5 class="modal-title">Add Job Type</h5>
 						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 							<span aria-hidden="true">&times;</span>
 						</button>
 					</div>
 					<div class="modal-body">
-						<form method="POST" action="../../API/Admin/addNewUser.php" id="addUserForm" enctype="multipart/form-data">
+						<form method="POST" action="../../API/Admin/addNewType.php" id="addTypeForm" enctype="multipart/form-data">
 							<div class="row form-row">
-
-								<div class="col-12 col-sm-6">
-									<div class="form-group">
-										<label>First Name</label><label class="text-danger">*</label>
-										<input type="text" name="First_Name" class="form-control" required="">
-									</div>
-								</div>
-
-								<div class="col-12 col-sm-6">
-									<div class="form-group">
-										<label>Last Name</label><label class="text-danger">*</label>
-										<input type="text" name="Last_Name" class="form-control" required="">
-									</div>
-								</div>
-
-								<?php
-
-								require_once '../Controllers/select_controller.php';
-
-								$db_handle = new DBController();
-								$countryResult = $db_handle->runQuery("SELECT * FROM tbl_roles ORDER BY Role_Id ASC");
-								?>
-
-								<div class="col-12 col-sm-6">
-									<div class="form-group">
-										<label>Username</label><label class="text-danger">*</label>
-										<input type="text" name="Username" class="form-control" required="">
-									</div>
-								</div>
-
-								<div class="col-12 col-sm-6">
-									<div class="form-group">
-										<label>Password</label><label class="text-danger">*</label>
-										<input type="password" name="Password" class="form-control" required="">
-									</div>
-								</div>
-
 								<div class="col-12">
 									<div class="form-group">
-										<label>Role Name</label><label class="text-danger">*</label>
-										<select style="width:100%;" name="Status" id="roleSelect" class="form-control" required="">
-											<option selected disabled>Select Role Name</option>
-											<?php
-											if (! empty($countryResult)) {
-												foreach ($countryResult as $key => $value) {
-													echo '<option value="' . $countryResult[$key]['Role_Name'] . '">' . $countryResult[$key]['Role_Name'] . '</option>';
-												}
-											}
-											?>
-										</select>
+										<label>Job Type</label><label class="text-danger">*</label>
+										<input type="text" name="Job_Type" class="form-control" required="">
 									</div>
 								</div>
-
 							</div>
 							<button type="submit" name="save" class="btn btn-primary btn-block">Save Changes</button>
 						</form>
@@ -352,71 +289,26 @@ if (mysqli_num_rows($permission_query) > 0) {
 		<!-- Add Modal -->
 
 		<!-- Edit Details Modal-->
-		<div class="modal fade" id="Update_User" aria-hidden="true" role="dialog">
+		<div class="modal fade" id="Update_Type" aria-hidden="true" role="dialog">
 			<div class="modal-dialog modal-dialog-centered" role="document">
 				<div class="modal-content">
 					<div class="modal-header">
-						<h5 class="modal-title">Edit User Details</h5>
+						<h5 class="modal-title">Edit Job Type</h5>
 						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 							<span aria-hidden="true">&times;</span>
 						</button>
 					</div>
 					<div class="modal-body">
-						<form method="POST" action="../../API/Admin/updateUser.php" id="updateUserForm" enctype="multipart/form-data">
+						<form method="POST" action="../../API/Admin/updateType.php" id="updateTypeForm" enctype="multipart/form-data">
 							<div class="row form-row">
-
-								<?php
-
-								require_once '../Controllers/select_controller.php';
-
-								$db_handle = new DBController();
-								$countryResult = $db_handle->runQuery("SELECT * FROM tbl_roles ORDER BY Role_Id ASC");
-								?>
-
-								<div class="col-12 col-sm-6">
-									<div class="form-group">
-										<label>First Name</label><label class="text-danger">*</label>
-										<input style="display:none;" type="text" name="Id" class="form-control" required="" readonly="true">
-										<input type="text" name="First_Name" class="form-control" required="">
-									</div>
-								</div>
-
-								<div class="col-12 col-sm-6">
-									<div class="form-group">
-										<label>Last Name</label><label class="text-danger">*</label>
-										<input type="text" name="Last_Name" class="form-control" required="">
-									</div>
-								</div>
-
-								<div class="col-12 col-sm-6">
-									<div class="form-group">
-										<label>Username</label><label class="text-danger">*</label>
-										<input type="text" name="Username" class="form-control" required="">
-									</div>
-								</div>
-
-								<div class="col-12 col-sm-6">
-									<div class="form-group">
-										<label>Password</label><label class="text-danger"></label>
-										<input type="password" name="Password" class="form-control">
-									</div>
-								</div>
-
 								<div class="col-12">
 									<div class="form-group">
-										<label>Role Name</label><label class="text-danger">*</label>
-										<select style="width:100%;" name="Status" id="updateRoleSelect" class="form-control select2" required="">
-											<option disabled selected>Select Role Name</option>
-											<?php
-											if (!empty($countryResult)) {
-												foreach ($countryResult as $role) {
-													echo '<option value="' . htmlspecialchars($role['Role_Name']) . '">' . htmlspecialchars($role['Role_Name']) . '</option>';
-												}
-											}
-											?>
-										</select>
+										<label>Job Type</label><label class="text-danger">*</label>
+										<input style="display:none;" type="text" name="Id" class="form-control" required="" readonly="true">
+										<input type="text" name="Job_Type" class="form-control" required="">
 									</div>
 								</div>
+
 							</div>
 							<button type="submit" name="edit" class="btn btn-primary btn-block">Update Changes</button>
 						</form>
@@ -427,7 +319,7 @@ if (mysqli_num_rows($permission_query) > 0) {
 		<!--/Edit Details Modal -->
 
 		<!-- Delete Modal -->
-		<div class="modal fade" id="Delete_User" aria-hidden="true" role="dialog">
+		<div class="modal fade" id="Delete_Type" aria-hidden="true" role="dialog">
 			<div class="modal-dialog modal-dialog-centered" role="document">
 				<div class="modal-content">
 					<div class="modal-header">
@@ -438,10 +330,10 @@ if (mysqli_num_rows($permission_query) > 0) {
 					</div>
 					<div class="modal-body">
 						<div class="form-content p-2">
-							<h4 class="modal-title">Delete <span id="deleteUserName"></span></h4>
+							<h4 class="modal-title">Delete <span id="deleteType"></span></h4>
 							<p class="mb-4">Are you sure want to delete ?</p>
 
-							<form method="POST" action="../../API/Admin/deleteUser.php" id="deleteUserForm" enctype="multipart/form-data">
+							<form method="POST" action="../../API/Admin/deleteType.php" id="deleteTypeForm" enctype="multipart/form-data">
 								<input style="display: none;" type="text" name="Id" required="" readonly="true">
 								<button type="submit" name="delete" class="btn btn-primary btn-block">Delete </button>
 							</form>
@@ -455,11 +347,9 @@ if (mysqli_num_rows($permission_query) > 0) {
 	</div>
 	<!-- /Main Wrapper -->
 
-	<!-- Footer -->
 	<?php
 	require '../Models/footer.php';
 	?>
-	<!-- /Footer -->
 
 	<!-- jQuery -->
 	<script src="assets/js/jquery-3.2.1.min.js"></script>
@@ -480,11 +370,12 @@ if (mysqli_num_rows($permission_query) > 0) {
 
 	<!-- Select2 JS -->
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+	<script src="https://cdn.tiny.cloud/1/9lf9h735jucnqfgf4ugu8egij1icgzsrgbcmsk5tg44cjba8/tinymce/8/tinymce.min.js" referrerpolicy="origin" crossorigin="anonymous"></script>
 
 	<script>
 		// GLOBAL ALERT FUNCTIONS
 		function showSaveAlerts(response) {
-			$('#Add_User').modal('hide');
+			$('#Add_Type').modal('hide');
 
 			if (response.success === 'true') {
 				$('#SaveSuccessModel').modal('show');
@@ -496,7 +387,7 @@ if (mysqli_num_rows($permission_query) > 0) {
 		}
 
 		function showUpdateAlerts(response) {
-			$('#Update_User').modal('hide');
+			$('#Update_Type').modal('hide');
 
 			if (response.success === 'true') {
 				$('#UpdateSuccessModel').modal('show');
@@ -508,7 +399,7 @@ if (mysqli_num_rows($permission_query) > 0) {
 		}
 
 		function showDeleteAlerts(response) {
-			$('#Delete_User').modal('hide');
+			$('#Delete_Type').modal('hide');
 
 			if (response.success === 'true') {
 				$('#DeleteSuccessModel').modal('show');
@@ -531,46 +422,33 @@ if (mysqli_num_rows($permission_query) > 0) {
 				}, delay);
 			});
 
-			$('#roleSelect').select2();
-			$('#updateRoleSelect').select2();
-
-			// Make an AJAX request to getAllUserData.php
+			// DATA TABLE FETCH
 			$.ajax({
 				type: 'POST',
-				url: '../../API/Admin/getAllUserData.php',
+				url: '../../API/Admin/getAllTypeData.php',
 				dataType: 'json',
 				success: function(data) {
 					if (data.length > 0) {
-						// Destroy existing DataTable, if any
 						$('.datatable').DataTable().destroy();
 
 						var table = $('.datatable').DataTable({
-							searching: true, // Enable search
-							columnDefs: [{
-								targets: 4,
-								className: 'text-center'
-							}]
+							searching: true,
 						});
 
-						// Clear existing rows
 						table.clear();
 
 						$.each(data, function(index, row) {
-
-							const canEdit = <?php echo $has_access_to_edit_user ? 'true' : 'false'; ?>;
-							const canDelete = <?php echo $has_access_to_delete_user ? 'true' : 'false'; ?>;
+							const canEdit = <?php echo $has_access_to_edit_type ? 'true' : 'false'; ?>;
+							const canDelete = <?php echo $has_access_to_delete_type ? 'true' : 'false'; ?>;
 
 							let actionButtons = `<div class="actions">`;
 
 							if (canEdit) {
 								actionButtons += `
                                 <a href="javascript:void(0);"
-                                class="btn btn-sm bg-primary-light ms-1 edit-user-btn"
-                                data-id="${row.id}"
-                                data-firstname="${row.firstname}"
-								data-lastname="${row.lastname}"
-                                data-status="${row.status}"
-                                data-username="${row.username}">
+                                class="btn btn-sm bg-primary-light ms-1 edit-type-btn"
+                                data-id="${row.Id}"
+                                data-name="${row.Job_Type}">
                                     <i class="fe fe-pencil"></i> Edit
                                 </a>`;
 							}
@@ -578,10 +456,9 @@ if (mysqli_num_rows($permission_query) > 0) {
 							if (canDelete) {
 								actionButtons += `
                                 <a href="javascript:void(0);"
-                                class="btn btn-sm bg-danger-light ms-1 delete-user-btn"
-                                data-id="${row.id}"
-                                data-firstname="${row.firstname}"
-								data-lastname="${row.lastname}">
+                                class="btn btn-sm bg-danger-light ms-1 delete-type-btn"
+                                data-id="${row.Id}"
+                                data-name="${row.Job_Type}">
                                     <i class="fe fe-trash"></i> Delete
                                 </a>`;
 							}
@@ -589,100 +466,104 @@ if (mysqli_num_rows($permission_query) > 0) {
 							actionButtons += `</div>`;
 
 							table.row.add([
-								row.id,
-								'<a href="javascript:void(0);" class="avatar avatar-sm mr-2 preview-image" data-img="' + row.img + '">' + '<img class="avatar-img rounded-circle" src="' + row.img + '" style="width:40px;height:40px;object-fit:cover;border-radius:50%;">' + '</a>' + row.firstname + ' ' + row.lastname,
-								row.status,
-								row.username,
+								row.Id,
+								row.Job_Type,
 								actionButtons
 							]);
 						});
 
 						// After table initialization, hide the column if all actionButtons are empty
-						if (!<?php echo ($has_access_to_edit_user || $has_access_to_delete_user) ? 'true' : 'false'; ?>) {
-							$('.datatable').DataTable().column(4).visible(false); // Hide Actions column
+						if (!<?php echo ($has_access_to_edit_type || $has_access_to_delete_type) ? 'true' : 'false'; ?>) {
+							$('.datatable').DataTable().column(2).visible(false); // Hide Actions column
 						}
 
-						// Draw the table
 						table.draw();
-
-					} else {
-						console.log('No data received.');
 					}
 				},
 				error: function(xhr, status, error) {
-					console.error('Error:', status, error);
+					console.error('Error fetching departments:', status, error);
 				}
 			});
 
-			// ADD USER
-			$('#addUserForm').submit(function(event) {
+			// TINYMCE INIT
+			function initTinyMCE(selector, counterSelector) {
+				tinymce.init({
+					selector: selector,
+					height: 250,
+					menubar: false,
+					branding: false,
+					plugins: 'lists link',
+					toolbar: 'bold italic underline | bullist numlist | undo redo',
+					setup: function(editor) {
+						const limit = 250;
+						const result = document.querySelector(counterSelector);
 
-				event.preventDefault();
+						editor.on('input keyup', function() {
+							let text = editor.getContent({
+								format: 'text'
+							});
+							let count = text.length;
+							result.textContent = `${count} / ${limit}`;
 
-				$('#pageLoader').show(); // Show loader before sending
-
-				$.ajax({
-					type: 'POST',
-					url: '../../API/Admin/addNewUser.php',
-					data: $(this).serialize(),
-					success: function(response) {
-						// Parse the response as a JSON object (if not already parsed)
-						if (typeof response === 'string') {
-							response = JSON.parse(response);
-						}
-
-						// Show the appropriate modal based on response
-						showSaveAlerts(response);
-
-						// Log the response for debugging
-						console.log(response);
-					},
-					error: function(xhr, status, error) {
-						console.error('Error:', status, error);
-						// Hide the Add Supplier modal in case of any AJAX errors and show failure modal
-						$('#Add_User').modal('hide');
-						$('#SaveFailedModel').modal('show');
-					},
-					complete: function() {
-						$('#pageLoader').hide(); // Hide loader after response (success or error)
-					},
-					error: function(xhr, status, error) {
-						console.error('Error:', status, error);
+							if (count > limit) {
+								editor.getContainer().style.border = "1px solid #F08080";
+								result.style.color = "#F08080";
+							} else {
+								editor.getContainer().style.border = "1px solid #1ABC9C";
+								result.style.color = "#333";
+							}
+						});
 					}
 				});
-			});
+			}
 
-			// Handle the "Ok" button click in the SaveSuccessModel
-			$('#SaveSuccessModel #OkBtn').on('click', function() {
-				// Refresh the page when "Ok" is clicked
-				window.location.href = 'add_users.php';
-			});
+			initTinyMCE('#add-text', '#Add_Type #count-result');
+			initTinyMCE('#edit-text', '#Update_Type #count-result');
 
-			// EDIT USER
-			$(document).on('click', '.edit-user-btn', function() {
-				const Id = $(this).data('id');
-				const firstName = $(this).data('firstname');
-				const lastName = $(this).data('lastname');
-				const Username = $(this).data('username');
-				const Status = $(this).data('status');
-
-				$('#Update_User input[name="Id"]').val(Id);
-				$('#Update_User input[name="First_Name"]').val(firstName);
-				$('#Update_User input[name="Last_Name"]').val(lastName);
-				$('#Update_User input[name="Username"]').val(Username);
-				$('#Update_User select[name="Status"]').val(Status).trigger('change');
-
-				$('#Update_User').modal('show');
-			});
-
-			$('#updateUserForm').submit(function(e) {
+			// ADD TYPE
+			$('#addTypeForm').submit(function(e) {
 				e.preventDefault();
-
 				$('#pageLoader').show();
 
 				$.ajax({
 					type: 'POST',
-					url: '../../API/Admin/updateUser.php',
+					url: '../../API/Admin/addNewType.php',
+					data: $(this).serialize(),
+					success: function(response) {
+						if (typeof response === 'string') response = JSON.parse(response);
+						showSaveAlerts(response);
+					},
+					error: function() {
+						$('#Add_Type').modal('hide');
+						$('#SaveFailedModel').modal('show');
+					},
+					complete: function() {
+						$('#pageLoader').hide();
+					}
+				});
+			});
+
+			$('#SaveSuccessModel #OkBtn').click(function() {
+				window.location.href = 'add_types.php';
+			});
+
+			// EDIT TYPE
+			$(document).on('click', '.edit-type-btn', function() {
+				const Id = $(this).data('id');
+				const jobType = $(this).data('name');
+
+				$('#Update_Type input[name="Id"]').val(Id);
+				$('#Update_Type input[name="Job_Type"]').val(jobType);
+				$('#Update_Type').modal('show');
+			});
+
+			$('#updateTypeForm').submit(function(e) {
+				e.preventDefault();
+				$('#pageLoader').show();
+
+				$.ajax({
+					type: 'POST',
+					url: '../../API/Admin/updateType.php',
 					data: $(this).serialize(),
 					success: function(response) {
 						if (typeof response === 'string') response = JSON.parse(response);
@@ -691,7 +572,7 @@ if (mysqli_num_rows($permission_query) > 0) {
 					},
 					error: function(xhr, status, error) {
 						console.error('Error:', status, error);
-						$('#Update_User').modal('hide');
+						$('#Update_Type').modal('hide');
 						$('#UpdateFailedModel').modal('show');
 					},
 					complete: function() {
@@ -701,26 +582,26 @@ if (mysqli_num_rows($permission_query) > 0) {
 			});
 
 			$('#UpdateSuccessModel #OkBtn').click(function() {
-				window.location.href = 'add_users.php';
+				window.location.href = 'add_types.php';
 			});
 
-			// DELETE USER
-			$(document).on('click', '.delete-user-btn', function() {
+			// DELETE TYPE
+			$(document).on('click', '.delete-type-btn', function() {
 				const Id = $(this).data('id');
-				const fullName = `${$(this).data('firstname')} ${$(this).data('lastname')}`;
+				const jobType = $(this).data('name');
 
-				$('#Delete_User input[name="Id"]').val(Id);
-				$('#deleteUserName').text(fullName);
-				$('#Delete_User').modal('show');
+				$('#Delete_Type input[name="Id"]').val(Id);
+				$('#deleteType').text(jobType);
+				$('#Delete_Type').modal('show');
 			});
 
-			$('#deleteUserForm').submit(function(e) {
+			$('#deleteTypeForm').submit(function(e) {
 				e.preventDefault();
 				$('#pageLoader').show();
 
 				$.ajax({
 					type: 'POST',
-					url: '../../API/Admin/deleteUser.php',
+					url: '../../API/Admin/deleteType.php',
 					data: $(this).serialize(),
 					success: function(response) {
 						if (typeof response === 'string') response = JSON.parse(response);
@@ -729,7 +610,7 @@ if (mysqli_num_rows($permission_query) > 0) {
 					},
 					error: function(xhr, status, error) {
 						console.error('Error:', status, error);
-						$('#Delete_User').modal('hide');
+						$('#Delete_Type').modal('hide');
 						$('#DeleteFailedModel').modal('show');
 					},
 					complete: function() {
@@ -739,7 +620,7 @@ if (mysqli_num_rows($permission_query) > 0) {
 			});
 
 			$('#DeleteSuccessModel #OkBtn').click(function() {
-				window.location.href = 'add_users.php';
+				window.location.href = 'add_types.php';
 			});
 
 			// CURRENCY INPUT VALIDATION
@@ -750,24 +631,6 @@ if (mysqli_num_rows($permission_query) > 0) {
 				}
 			});
 
-			// Open image preview
-			$(document).on('click', '.preview-image', function () {
-				const imgSrc = $(this).data('img');
-				$('#fullPreviewImage').attr('src', imgSrc);
-				$('#imagePreviewModal').fadeIn();
-			});
-
-			// Close when clicking X
-			$('.close-preview').click(function () {
-				$('#imagePreviewModal').fadeOut();
-			});
-
-			// Close when clicking outside image
-			$('#imagePreviewModal').click(function (e) {
-				if (e.target.id === 'imagePreviewModal') {
-					$(this).fadeOut();
-				}
-			});
 		});
 	</script>
 

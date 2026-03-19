@@ -222,87 +222,11 @@ if ($result && mysqli_num_rows($result) > 0) {
 				?>
 				<!-- /Model Alerts -->
 
-				<!-- /Model Alerts -->
-				<div class="modal fade" id="UpdateSuccessModel" role="dialog">
-					<div class="modal-dialog modal-dialog-centered">
-						<!-- Modal content-->
-						<div class="modal-content text-center">
-							<div class="modal-body mt-4">
-								<i class="fa fa-check-circle animate__animated animate__tada animate__infinite" style="font-size: 100px; margin-top:20px; color:#26af48;" aria-hidden="true"></i>
-								<h3 class="modal-title"><b>Success</b></h3>
-								<p>Record Updated Successfully !</p>
-							</div>
-							<div class="modal-body">
-								<button style="width:20%;" type="button" class="btn btn-primary" id="OkBtn" data-dismiss="modal">OK</button>
-							</div>
-						</div>
-					</div>
-				</div>
-
-				<div class="modal fade" id="ImageUpdateSuccessModel" role="dialog">
-					<div class="modal-dialog modal-dialog-centered">
-						<!-- Modal content-->
-						<div class="modal-content text-center">
-							<div class="modal-body mt-4">
-								<i class="fa fa-check-circle animate__animated animate__tada animate__infinite" style="font-size: 100px; margin-top:20px; color:#26af48;" aria-hidden="true"></i>
-								<h3 class="modal-title"><b>Success</b></h3>
-								<p>Record Updated Successfully !</p>
-							</div>
-							<div class="modal-body">
-								<button style="width:20%;" type="button" class="btn btn-primary" id="OkBtn" data-dismiss="modal">OK</button>
-							</div>
-						</div>
-					</div>
-				</div>
-
-				<div class="modal fade" id="UpdateInvalidModel" role="dialog">
-					<div class="modal-dialog modal-dialog-centered">
-						<!-- Modal content-->
-						<div class="modal-content text-center">
-							<div class="modal-body mt-4">
-								<i class="fa fa-exclamation-circle animate__animated animate__tada animate__infinite" style="font-size: 100px; margin-top:20px; color:#e63c3c;" aria-hidden="true"></i>
-								<h3 class="modal-title"><b>Error</b></h3>
-								<p>Invalid File Format !</p>
-							</div>
-							<div class="modal-body">
-								<button style="width:20%;" type="button" class="btn btn-primary" id="OkBtn" data-dismiss="modal">OK</button>
-							</div>
-						</div>
-					</div>
-				</div>
-
-				<div class="modal fade" id="PasswordInvalidModel" role="dialog">
-					<div class="modal-dialog modal-dialog-centered">
-						<!-- Modal content-->
-						<div class="modal-content text-center">
-							<div class="modal-body mt-4">
-								<i class="fa fa-exclamation-circle animate__animated animate__tada animate__infinite" style="font-size: 100px; margin-top:20px; color:#e63c3c;" aria-hidden="true"></i>
-								<h3 class="modal-title"><b>Error</b></h3>
-								<p>Password Missmatch !</p>
-							</div>
-							<div class="modal-body">
-								<button style="width:20%;" type="button" class="btn btn-primary" id="OkBtn" data-dismiss="modal">OK</button>
-							</div>
-						</div>
-					</div>
-				</div>
-
-				<div class="modal fade" id="UpdateFailedModel" role="dialog">
-					<div class="modal-dialog modal-dialog-centered">
-						<!-- Modal content-->
-						<div class="modal-content text-center">
-							<div class="modal-body mt-4">
-								<i class="fa fa-exclamation-circle animate__animated animate__tada animate__infinite" style="font-size: 100px; margin-top:20px; color:#e63c3c;" aria-hidden="true"></i>
-								<h3 class="modal-title"><b>Error</b></h3>
-								<p>Record Not Saved !</p>
-							</div>
-							<div class="modal-body">
-								<button style="width:20%;" type="button" class="btn btn-primary" id="OkBtn" data-dismiss="modal">OK</button>
-							</div>
-						</div>
-					</div>
-				</div>
-				<!-- /Model Alerts -->
+				<!-- /Image Preview -->
+				<?php
+				require '../Models/imagePreview.php';
+				?>
+				<!-- /Image Preview -->
 
 				<!-- Page Header -->
 				<div class="page-header">
@@ -323,8 +247,8 @@ if ($result && mysqli_num_rows($result) > 0) {
 						<div class="profile-header">
 							<div class="row align-items-center">
 								<div class="col-auto profile-image-wrapper">
-									<a href="#">
-										<img class="rounded-circle" style="width: 100px; height: 100px; object-fit: cover; border-radius: 50%;" src="assets/img/default-user.png" alt="User Image" id="ProfileImage">
+									<a href="javascript:void(0);" class="preview-image">
+										<img class="rounded-circle" style="width: 100px; height: 100px; object-fit: cover; border-radius: 50%; cursor:pointer;" src="assets/img/default-user.png" alt="User Image" id="ProfileImage">
 									</a>
 
 									<!-- Edit Icon -->
@@ -779,6 +703,29 @@ if ($result && mysqli_num_rows($result) > 0) {
 					result.style.color = "#333";
 				}
 			});
+		});
+
+		// Open image preview
+		$(document).on('click', '.preview-image', function () {
+			// Get image inside the clicked wrapper
+			const imgSrc = $(this).find('img').attr('src');
+
+			if (imgSrc) {
+				$('#fullPreviewImage').attr('src', imgSrc);
+				$('#imagePreviewModal').fadeIn();
+			}
+		});
+
+		// Close when clicking X
+		$('.close-preview').click(function() {
+			$('#imagePreviewModal').fadeOut();
+		});
+
+		// Close when clicking outside image
+		$('#imagePreviewModal').click(function(e) {
+			if (e.target.id === 'imagePreviewModal') {
+				$(this).fadeOut();
+			}
 		});
 
 		/* ===============================

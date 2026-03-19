@@ -59,13 +59,19 @@
 
                 <?php if (hasPermission($role, 'add_departments.php', $conn)) { ?>
                 <li class="<?php echo ($currentPage == 'add_departments.php') ? 'active' : ''; ?>"> 
-                    <a href="add_departments.php"><i class="fa fa-building-o" aria-hidden="true"></i> <span>Departments</span></a>
+                    <a href="add_departments.php"><i class="fa fa-university" aria-hidden="true"></i> <span>Departments</span></a>
                 </li>
                 <?php } ?>
 
                 <?php if (hasPermission($role, 'add_locations.php', $conn)) { ?>
                 <li class="<?php echo ($currentPage == 'add_locations.php') ? 'active' : ''; ?>"> 
                     <a href="add_locations.php"><i class="fa fa-map-marker" aria-hidden="true"></i> <span>Location</span></a>
+                </li>
+                <?php } ?>
+
+                <?php if (hasPermission($role, 'add_types.php', $conn)) { ?>
+                <li class="<?php echo ($currentPage == 'add_types.php') ? 'active' : ''; ?>"> 
+                    <a href="add_types.php"><i class="fa fa-suitcase" aria-hidden="true"></i> <span>Job Types</span></a>
                 </li>
                 <?php } ?>
 
@@ -87,11 +93,11 @@
                 </li>
                 <?php } ?>
 
-                <p class="menu-title" style="color:#949494;"><span>Order Management</span></p>
+                <p class="menu-title" style="color:#949494;"><span>Job Management</span></p>
 
-                <?php if (hasPermission($role, 'orders.php', $conn)) { ?>
-                <li class="<?php echo ($currentPage == 'orders.php' || $currentPage == 'view_order.php') ? 'active' : ''; ?>"> 
-                    <a href="orders.php"><i class="fa fa-shopping-bag" aria-hidden="true"></i> <span>Orders</span></a>
+                <?php if (hasPermission($role, 'add_vacancies.php', $conn)) { ?>
+                <li class="<?php echo ($currentPage == 'add_vacancies.php' || $currentPage == 'view_vacancies.php') ? 'active' : ''; ?>"> 
+                    <a href="add_vacancies.php"><i class="fa fa-tags"></i> <span>Vacancies</span></a>
                 </li>
                 <?php } ?>
 
