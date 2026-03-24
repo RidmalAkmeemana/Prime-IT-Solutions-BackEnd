@@ -65,12 +65,39 @@ if (mysqli_num_rows($permission_query) > 0) {
 	<link rel="stylesheet" href="assets/css/style.css">
 	<link rel="stylesheet" href="assets/css/dark_mode_style.css">
 
+	<!-- Select2 CSS -->
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
+
 	<!--[if lt IE 9]>
 			<script src="assets/js/html5shiv.min.js"></script>
 			<script src="assets/js/respond.min.js"></script>
 		<![endif]-->
 
 	<style>
+
+		.select2-container--default .select2-selection--single {
+			height: 38px;
+			/* Adjust this value as needed */
+			padding: 6px;
+			font-size: 14px;
+		}
+
+		.select2-container--default .select2-selection--single .select2-selection__rendered {
+			line-height: 26px;
+			/* Adjust to align text vertically */
+		}
+
+		.select2-container--default .select2-selection--single .select2-selection__arrow {
+			height: 38px;
+			/* Adjust this value to match the height */
+		}
+
+		.select2-dropdown {
+			max-height: 300px;
+			/* Adjust the dropdown height */
+			overflow-y: auto;
+		}
+
 		/* Full-Screen Loader */
 		#pageLoader {
 			position: fixed;
@@ -257,18 +284,83 @@ if (mysqli_num_rows($permission_query) > 0) {
 						<form method="POST" action="../../API/Admin/addNewVacancy.php" id="addVacancyForm" enctype="multipart/form-data">
 							<div class="row form-row">
 
+								<?php
+
+									require_once '../Controllers/select_controller.php';
+
+									$db_handle = new DBController();
+									$departmentResult = $db_handle->runQuery("SELECT * FROM tbl_departments ORDER BY Id ASC");
+									$locationResult = $db_handle->runQuery("SELECT * FROM tbl_locations ORDER BY Id ASC");
+									$typeResult = $db_handle->runQuery("SELECT * FROM tbl_types ORDER BY Id ASC");
+								?>
+
 								<div class="col-12">
 									<div class="form-group">
-										<label>Department Name</label><label class="text-danger">*</label>
-										<input type="text" name="Department_Name" class="form-control" required="">
+										<label>Job Title</label><label class="text-danger">*</label>
+										<input type="text" name="Job_Title" class="form-control" required="">
+									</div>
+								</div>
+
+								<div class="col-6">
+									<div class="form-group">
+										<label>Department</label><label class="text-danger">*</label>
+										<select style="width:100%;" name="Department_Id" id="departmentSelect" class="form-control" required="">
+											<option selected disabled>Select Department</option>
+											<?php
+											if (! empty($departmentResult)) {
+												foreach ($departmentResult as $key => $value) {
+													echo '<option value="' . $departmentResult[$key]['Id'] . '">' . $departmentResult[$key]['Department_Name'] . '</option>';
+												}
+											}
+											?>
+										</select>
+									</div>
+								</div>
+
+								<div class="col-6">
+									<div class="form-group">
+										<label>Location</label><label class="text-danger">*</label>
+										<select style="width:100%;" name="Location_Id" id="locationSelect" class="form-control" required="">
+											<option selected disabled>Select Location</option>
+											<?php
+											if (! empty($locationResult)) {
+												foreach ($locationResult as $key => $value) {
+													echo '<option value="' . $locationResult[$key]['Id'] . '">' . $locationResult[$key]['Location_Name'] . '</option>';
+												}
+											}
+											?>
+										</select>
+									</div>
+								</div>
+
+								<div class="col-6">
+									<div class="form-group">
+										<label>Job Type</label><label class="text-danger">*</label>
+										<select style="width:100%;" name="Type_Id" id="typeSelect" class="form-control" required="">
+											<option selected disabled>Select Job Type</option>
+											<?php
+											if (! empty($typeResult)) {
+												foreach ($typeResult as $key => $value) {
+													echo '<option value="' . $typeResult[$key]['Id'] . '">' . $typeResult[$key]['Job_Type'] . '</option>';
+												}
+											}
+											?>
+										</select>
+									</div>
+								</div>
+
+								<div class="col-6">
+									<div class="form-group">
+										<label>Application Closing Date</label><label class="text-danger">*</label>
+										<input type="datetime-local" name="Closing_Date" class="form-control" required="">
 									</div>
 								</div>
 
 								<div class="col-12">
 									<div class="form-group">
-										<label>Department Description</label><label class="text-danger">*</label>
-										<textarea id="add-text" name="Department_description" class="form-control" rows="8" placeholder="Enter Description . . ."></textarea>
-										<p id="count-result">0/250</p>
+										<label>Job Description</label><label class="text-danger">*</label>
+										<textarea id="add-text" name="Job_Description" class="form-control" rows="8" placeholder="Enter Description . . ."></textarea>
+										<p id="count-result">0/2500</p>
 									</div>
 								</div>
 
@@ -336,6 +428,10 @@ if (mysqli_num_rows($permission_query) > 0) {
 					$("#pageLoader").hide();
 				}, delay);
 			});
+
+			$('#departmentSelect').select2();
+			$('#locationSelect').select2();
+			$('#typeSelect').select2();
 
 			// DATA TABLE FETCH
 			$.ajax({
@@ -423,7 +519,7 @@ if (mysqli_num_rows($permission_query) > 0) {
 					plugins: 'lists link',
 					toolbar: 'bold italic underline | bullist numlist | undo redo',
 					setup: function(editor) {
-						const limit = 250;
+						const limit = 2500;
 						const result = document.querySelector(counterSelector);
 
 						editor.on('input keyup', function() {
