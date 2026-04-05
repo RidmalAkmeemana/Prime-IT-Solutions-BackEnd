@@ -1,8 +1,8 @@
 <?php
+header("Access-Control-Allow-Origin: *");
+header("Content-Type: application/json; charset=UTF-8");
+require '../../API/Connection/config.php';
 
-require '../../API/Connection/BackEndPermission.php';
-
-// SQL query to get the Role details and the sum of user count related to Status
 $sql = "SELECT 
             v.Vacancy_Id,
             v.Job_Title,
@@ -10,16 +10,13 @@ $sql = "SELECT
             v.Job_Description,
             l.Location_Name,
             t.Job_Type,
-            v.Is_Active,
-            v.Created_Date,
-            v.Closing_Date,
-            COUNT(a.Application_Id) AS Application_Count
+            v.Closing_Date
         FROM tbl_vacancies v
         LEFT JOIN tbl_departments d ON v.Department_Id = d.Id
         LEFT JOIN tbl_locations l ON v.Location_Id = l.Id
         LEFT JOIN tbl_types t ON v.Type_Id = t.Id
         LEFT JOIN tbl_applications a ON v.Vacancy_Id = a.Vacancy_Id
-        GROUP BY v.Vacancy_Id
+        WHERE v.Is_Active = '1'
         ORDER BY v.Vacancy_Id ASC";
 
 $result = $conn->query($sql);
@@ -35,10 +32,7 @@ if ($result->num_rows > 0) {
             "Job_Description" => $row["Job_Description"],
             "Location_Name" => $row["Location_Name"],
             "Job_Type" => $row["Job_Type"],
-            "Is_Active" => $row["Is_Active"],
-            "Created_Date" => $row["Created_Date"],
-            "Closing_Date" => $row["Closing_Date"],
-            "Application_Count" => $row["Application_Count"]
+            "Closing_Date" => $row["Closing_Date"]
         ));
     }
 }

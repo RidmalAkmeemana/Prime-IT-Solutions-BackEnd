@@ -252,6 +252,7 @@ if (mysqli_num_rows($permission_query) > 0) {
 												<th>Is Active</th>
 												<th>Created Date</th>
 												<th>Closing Date</th>
+												<th>Application Count</th>
 												<th>Action</th>
 											</tr>
 										</thead>
@@ -455,6 +456,10 @@ if (mysqli_num_rows($permission_query) > 0) {
 									{
 										targets: 8,
 										className: 'text-center'
+									},
+									{
+										targets: 9,
+										className: 'text-center'
 									}
 								]
 						});
@@ -489,7 +494,8 @@ if (mysqli_num_rows($permission_query) > 0) {
 								statusToggle,
 								row.Created_Date,
 								row.Closing_Date,
-								'<div class="actions"><a class="btn btn-sm bg-success-light" href="view_role.php?Role_Id=' + row.Vacancy_Id + '"><i class="fe fe-eye"></i> View </a></div>'
+								row.Application_Count,
+								'<div class="actions"><a class="btn btn-sm bg-success-light" href="view_vacancies.php?Vacancy_Id=' + row.Vacancy_Id + '"><i class="fe fe-eye"></i> View </a></div>'
 							]);
 						});
 
