@@ -957,19 +957,19 @@ if (mysqli_num_rows($permission_query) > 0) {
                                         <td>${data.Job_Type}</td>
                                     </tr>
                                     <tr>
-                                        <td><b>Name</b></td>
+                                        <td><b>Applicant Name</b></td>
                                         <td>${data.Applicant_Name}</td>
                                     </tr>
                                     <tr>
-                                        <td><b>Address</b></td>
+                                        <td><b>Applicant Address</b></td>
                                         <td>${data.Applicant_Address}</td>
                                     </tr>
                                     <tr>
-                                        <td><b>Contact</b></td>
+                                        <td><b>Applicant Contact</b></td>
                                         <td>${data.Applicant_Contact}</td>
                                     </tr>
                                     <tr>
-                                        <td><b>Email</b></td>
+                                        <td><b>Applicant Email</b></td>
                                         <td>${data.Applicant_Email}</td>
                                     </tr>
                                 </table>
