@@ -254,7 +254,7 @@ if (mysqli_num_rows($permission_query) > 0) {
 
 				<!-- Page Header -->
 				<div class="page-header">
-				<?php
+					<?php
 					$Vacancy_Id = mysqli_real_escape_string($conn, $_REQUEST["Vacancy_Id"]);
 					$query1 = mysqli_query($conn, "SELECT 
 							v.Id, 
@@ -276,7 +276,7 @@ if (mysqli_num_rows($permission_query) > 0) {
 					") or die(mysqli_error($conn));
 
 					$fetch1 = mysqli_fetch_assoc($query1);
-				?>
+					?>
 
 					<!-- Edit and Delete Buttons -->
 					<div class="row">
@@ -376,7 +376,7 @@ if (mysqli_num_rows($permission_query) > 0) {
 											<?php else: ?>
 												<th style="display:none;">Action</th>
 											<?php endif; ?>
-											
+
 										</tr>
 									</thead>
 
@@ -413,12 +413,12 @@ if (mysqli_num_rows($permission_query) > 0) {
 
 								<?php
 
-									require_once '../Controllers/select_controller.php';
+								require_once '../Controllers/select_controller.php';
 
-									$db_handle = new DBController();
-									$departmentResult = $db_handle->runQuery("SELECT * FROM tbl_departments ORDER BY Id ASC");
-									$locationResult = $db_handle->runQuery("SELECT * FROM tbl_locations ORDER BY Id ASC");
-									$typeResult = $db_handle->runQuery("SELECT * FROM tbl_types ORDER BY Id ASC");
+								$db_handle = new DBController();
+								$departmentResult = $db_handle->runQuery("SELECT * FROM tbl_departments ORDER BY Id ASC");
+								$locationResult = $db_handle->runQuery("SELECT * FROM tbl_locations ORDER BY Id ASC");
+								$typeResult = $db_handle->runQuery("SELECT * FROM tbl_types ORDER BY Id ASC");
 								?>
 
 								<div class="col-12">
@@ -534,17 +534,42 @@ if (mysqli_num_rows($permission_query) > 0) {
 		<!-- View Model -->
 		<div id="applicationModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:9999; overflow:auto;">
 			<div style="max-width:650px; margin:50px auto; background:#fff; border-radius:8px; position:relative;">
-				
+
 				<!-- CLOSE BUTTON -->
-				<span onclick="closeModal()" 
+				<span onclick="closeModal()"
 					style="position:absolute; top:10px; right:15px; cursor:pointer; font-size:20px;">&times;</span>
 
 				<!-- CONTENT WILL LOAD HERE -->
 				<div id="modalContent"></div>
 
 			</div>
-		</div>								
+		</div>
 		<!-- View Model -->
+
+		<!-- Update Modal -->
+		<div class="modal fade" id="Update_Application_Status">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<form method="POST" action="../../API/Admin/updateApplicationStatus.php" id="updateApplicationStatusForm" enctype="multipart/form-data">
+						<div class="modal-header">
+							<h5 class="modal-title">Update Application Status</h5>
+							<button type="button" class="close" data-dismiss="modal">&times;</button>
+						</div>
+						<div class="modal-body">
+							<input type="hidden" name="Application_Id">
+							<input type="hidden" name="Status">
+							<p>Are you sure you want to change status to
+								<b id="updateStatusText"></b> ?
+							</p>
+						</div>
+						<div class="modal-footer">
+							<button type="submit" class="btn btn-primary btn-block">Update Changes</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+		<!-- Update Modal -->
 
 		<!-- /Main Wrapper -->
 
@@ -585,6 +610,7 @@ if (mysqli_num_rows($permission_query) > 0) {
 				// GLOBAL ALERT FUNCTIONS
 				function showUpdateAlerts(response) {
 					$('#Update_Vacancy').modal('hide');
+					$('#Update_Application_Status').modal('hide');
 
 					if (response.success === 'true') {
 						$('#UpdateSuccessModel').modal('show');
@@ -705,8 +731,7 @@ if (mysqli_num_rows($permission_query) > 0) {
 							$('.datatable').DataTable().destroy();
 							var table = $('.datatable').DataTable({
 								searching: true,
-								columnDefs: [
-									{
+								columnDefs: [{
 										targets: 2,
 										className: 'text-center'
 									},
@@ -753,7 +778,7 @@ if (mysqli_num_rows($permission_query) > 0) {
 									}
 
 									table.row.add([
-										application.Application_Id, 
+										application.Application_Id,
 										application.Applicant_Name,
 										Status,
 										application.Applicant_Address,
@@ -783,7 +808,9 @@ if (mysqli_num_rows($permission_query) > 0) {
 					e.preventDefault();
 
 					// Get TinyMCE content
-					let descriptionText = tinymce.get('edit-text').getContent({ format: 'text' }).trim();
+					let descriptionText = tinymce.get('edit-text').getContent({
+						format: 'text'
+					}).trim();
 
 					// Validation
 					if (!descriptionText.length) {
@@ -864,139 +891,183 @@ if (mysqli_num_rows($permission_query) > 0) {
 					window.location.href = 'add_vacancies.php';
 				});
 
+				// ===============================
+				// UPDATE STATUS SUBMIT
+				// ===============================
+				$('#updateApplicationStatusForm').submit(function(e) {
+					e.preventDefault()
+					$('#pageLoader').show()
+
+					$.ajax({
+						type: 'POST',
+						url: '../../API/Admin/updateApplicationStatus.php',
+						data: $(this).serialize(),
+						success: function(response) {
+							if (typeof response === 'string') response = JSON.parse(response);
+							showUpdateAlerts(response);
+							console.log(response);
+						},
+						error: function(xhr, status, error) {
+							console.error('Error:', status, error);
+							$('#Update_Application_Status').modal('hide');
+							$('#UpdateFailedModel').modal('show');
+						},
+						complete: function() {
+							$('#pageLoader').hide();
+						}
+					})
+				});
+
+				$('#UpdateSuccessModel #OkBtn').click(function() {
+					window.location.href = 'add_vacancies.php';
+				});
+
 			});
 
-			$(document).on("click", ".view-btn", function () {
-    let applicationId = $(this).data("id");
+			$(document).on("click", ".view-btn", function() {
+				let applicationId = $(this).data("id");
 
-    $.ajax({
-        type: "POST",
-        url: "../../API/Admin/viewApplication.php",
-        data: { Application_Id: applicationId },
-        success: function (response) {
+				$.ajax({
+					type: "POST",
+					url: "../../API/Admin/viewApplication.php",
+					data: {
+						Application_Id: applicationId
+					},
+					success: function(response) {
 
-            let data = (typeof response === "string") ? JSON.parse(response) : response;
+						let data = (typeof response === "string") ? JSON.parse(response) : response;
 
-            if (data.success === "true") {
+						if (data.success === "true") {
 
-                let statusBadge = '';
-                if (data.Status === 'Pending') statusBadge = '<span class="badge badge-warning">Pending</span>';
-                else if (data.Status === 'Hired') statusBadge = '<span class="badge badge-primary">Hired</span>';
-                else if (data.Status === 'Rejected') statusBadge = '<span class="badge badge-danger">Rejected</span>';
-				else if (data.Status === 'Interview') statusBadge = '<span class="badge badge-info">Interview</span>';
-                else statusBadge = `<span class="badge badge-secondary">${data.Status}</span>`;
+							let statusBadge = '';
+							if (data.Status === 'Pending') statusBadge = '<span class="badge badge-warning">Pending</span>';
+							else if (data.Status === 'Hired') statusBadge = '<span class="badge badge-primary">Hired</span>';
+							else if (data.Status === 'Rejected') statusBadge = '<span class="badge badge-danger">Rejected</span>';
+							else if (data.Status === 'Interview') statusBadge = '<span class="badge badge-info">Interview</span>';
+							else statusBadge = `<span class="badge badge-secondary">${data.Status}</span>`;
 
-				let actionButtons = '';
+							let actionButtons = '';
 
-				if (data.Status === 'Pending') {
-					actionButtons = `
-						<button class="btn btn-secondary update-status" data-status="Sort Listed" data-id="${data.Application_Id}">Sort List</button>
-						<button class="btn btn-danger update-status ml-2" data-status="Rejected" data-id="${data.Application_Id}">Reject</button>
-					`;
-				}
-				else if (data.Status === 'Sort Listed') {
-					actionButtons = `
-						<button class="btn btn-warning update-status" data-status="Pending" data-id="${data.Application_Id}">Pending</button>
-						<button class="btn btn-danger update-status ml-2" data-status="Rejected" data-id="${data.Application_Id}">Reject</button>
-						<button class="btn btn-info update-status ml-2" data-status="Interview" data-id="${data.Application_Id}">Interview</button>
-					`;
-				}
-				else if (data.Status === 'Interview') {
-					actionButtons = `
-						<button class="btn btn-warning update-status" data-status="Pending" data-id="${data.Application_Id}">Pending</button>
-						<button class="btn btn-secondary update-status ml-2" data-status="Sort Listed" data-id="${data.Application_Id}">Sort List</button>
-						<button class="btn btn-danger update-status ml-2" data-status="Rejected" data-id="${data.Application_Id}">Reject</button>
-					`;
-				}
-				else {
-					actionButtons = ''; // Rejected & Hired → no buttons
-				}
+							if (data.Status === 'Pending') {
+								actionButtons = `
+								<button class="btn btn-secondary update-status" data-status="Sort Listed" data-id="${data.Application_Id}">Sort List</button>
+								<button class="btn btn-danger update-status ml-2" data-status="Rejected" data-id="${data.Application_Id}">Reject</button>
+							`;
+							} else if (data.Status === 'Sort Listed') {
+								actionButtons = `
+								<button class="btn btn-warning update-status" data-status="Pending" data-id="${data.Application_Id}">Pending</button>
+								<button class="btn btn-danger update-status ml-2" data-status="Rejected" data-id="${data.Application_Id}">Reject</button>
+								<button class="btn btn-info update-status ml-2" data-status="Interview" data-id="${data.Application_Id}">Interview</button>
+							`;
+							} else if (data.Status === 'Interview') {
+								actionButtons = `
+								<button class="btn btn-warning update-status" data-status="Pending" data-id="${data.Application_Id}">Pending</button>
+								<button class="btn btn-primary update-status ml-2" data-status="Hired" data-id="${data.Application_Id}">Hired</button>
+								<button class="btn btn-danger update-status ml-2" data-status="Rejected" data-id="${data.Application_Id}">Reject</button>	
+							`;
+							} else {
+								actionButtons = ''; // Rejected & Hired → no buttons
+							}
 
-                let html = `
-                <div style="font-family: Arial, sans-serif; background-color:#f6f6f6; padding:30px;">
-                    <table width="100%" style="max-width:600px; margin:auto; background:#fff; border-radius:8px;">
+							let html = `
+						<div class="application-card" style="font-family: Arial, sans-serif; background-color:#f6f6f6; padding:30px;">
+							<table width="100%" style="max-width:600px; margin:auto; background:#fff; border-radius:8px;">
 
-                        <tr>
-                            <td style="padding:20px;text-align:center;">
-                                <img src="assets/img/logo.png">
-                            </td>
-                        </tr>
+								<tr>
+									<td style="padding:20px;text-align:center;">
+										<img src="assets/img/logo.png">
+									</td>
+								</tr>
 
-                        <tr>
-                            <td style="padding:30px;">
-                                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap;">
-    
-									<!-- LEFT: STATUS -->
-									<p style="margin:0;"><b>Process Status</b>: ${statusBadge}</p>
+								<tr>
+									<td style="padding:30px;">
+										<div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap;">
+			
+											<!-- LEFT: STATUS -->
+											<p style="margin:0;"><b>Process Status: </b>${statusBadge}</p>
 
-									<!-- RIGHT: ACTION BUTTONS -->
-									<div>
-										${actionButtons}
-									</div>
+											<!-- RIGHT: ACTION BUTTONS -->
+											<div>
+												${actionButtons}
+											</div>
 
-								</div>
+										</div>
 
-                                <table width="100%" cellpadding="8" style="margin-top:20px;">
-                                    <tr style="background:#f2f2f2;">
-                                        <td colspan="2"><b>Applicant Details</b></td>
-                                    </tr>
-									<tr>
-                                        <td><b>Application No</b></td>
-                                        <td>${data.Application_Id}</td>
-                                    </tr>
-									<tr>
-                                        <td><b>Job Title</b></td>
-                                        <td>${data.Job_Title}</td>
-                                    </tr>
-									<tr>
-                                        <td><b>Job Location</b></td>
-                                        <td>${data.Job_Location}</td>
-                                    </tr>
-									<tr>
-                                        <td><b>Job Type</b></td>
-                                        <td>${data.Job_Type}</td>
-                                    </tr>
-                                    <tr>
-                                        <td><b>Applicant Name</b></td>
-                                        <td>${data.Applicant_Name}</td>
-                                    </tr>
-                                    <tr>
-                                        <td><b>Applicant Address</b></td>
-                                        <td>${data.Applicant_Address}</td>
-                                    </tr>
-                                    <tr>
-                                        <td><b>Applicant Contact</b></td>
-                                        <td>${data.Applicant_Contact}</td>
-                                    </tr>
-                                    <tr>
-                                        <td><b>Applicant Email</b></td>
-                                        <td>${data.Applicant_Email}</td>
-                                    </tr>
-                                </table>
+										<table width="100%" cellpadding="8" style="margin-top:20px;">
+											<tr style="background:#f2f2f2;">
+												<td colspan="2"><b>Applicant Details</b></td>
+											</tr>
+											<tr>
+												<td><b>Application No</b></td>
+												<td>${data.Application_Id}</td>
+											</tr>
+											<tr>
+												<td><b>Job Title</b></td>
+												<td>${data.Job_Title}</td>
+											</tr>
+											<tr>
+												<td><b>Job Location</b></td>
+												<td>${data.Job_Location}</td>
+											</tr>
+											<tr>
+												<td><b>Job Type</b></td>
+												<td>${data.Job_Type}</td>
+											</tr>
+											<tr>
+												<td><b>Applicant Name</b></td>
+												<td>${data.Applicant_Name}</td>
+											</tr>
+											<tr>
+												<td><b>Applicant Address</b></td>
+												<td>${data.Applicant_Address}</td>
+											</tr>
+											<tr>
+												<td><b>Applicant Contact</b></td>
+												<td>${data.Applicant_Contact}</td>
+											</tr>
+											<tr>
+												<td><b>Applicant Email</b></td>
+												<td>${data.Applicant_Email}</td>
+											</tr>
+										</table>
 
-								<!-- DOWNLOAD BUTTON -->
-                                <div style="text-align:center; margin-top:20px;">
-                                    <a href="${data.cvPdfUrl}" download
-                                    style="padding:10px 20px; background:#b72227; color:#fff; text-decoration:none; border-radius:5px;"><i class="fe fe-download"></i>
-                                        Download CV
-                                    </a>
-                                </div>
-                            </td>
-                        </tr>
-                    </table>
-                </div>
-                `;
+										<!-- DOWNLOAD BUTTON -->
+										<div style="text-align:center; margin-top:20px;">
+											<a href="${data.cvPdfUrl}" download
+											style="padding:10px 20px; background:#b72227; color:#fff; text-decoration:none; border-radius:5px;"><i class="fe fe-download"></i>
+												Download CV
+											</a>
+										</div>
+									</td>
+								</tr>
+							</table>
+						</div>
+						`;
 
-                $("#modalContent").html(html);
-                $("#applicationModal").fadeIn();
-            }
-        }
-    });
-});
+							$("#modalContent").html(html);
+							$("#applicationModal").fadeIn();
+						}
+					}
+				});
+			});
 
-		function closeModal() {
-			$("#applicationModal").fadeOut();
-		}
+			$(document).on('click', '.update-status', function() {
+
+				const Id = $(this).data('id')
+				const status = $(this).data('status')
+
+				$('#Update_Application_Status input[name="Application_Id"]').val(Id);
+				$('#Update_Application_Status input[name="Status"]').val(status);
+
+				$('#applicationModal').fadeOut();
+
+				$('#updateStatusText').text(status);
+				$('#Update_Application_Status').modal('show');
+			});
+
+			function closeModal() {
+				$("#applicationModal").fadeOut();
+			}
 		</script>
 
 

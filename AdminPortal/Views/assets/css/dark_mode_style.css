@@ -353,3 +353,44 @@ body.dark-mode #pageLoader .spinner {
 	border-top: 5px solid transparent;
 }
 
+/* ================================
+   DARK MODE - APPLICATION CARD ONLY
+================================ */
+body.dark-mode .application-card {
+    background-color: #121212 !important;
+}
+
+/* Card container */
+body.dark-mode .application-card table {
+    background-color: #1e1e1e !important;
+    color: #ffffff !important;
+}
+
+/* Inner content */
+body.dark-mode .application-card td {
+    color: #ffffff !important;
+}
+
+/* Header row (Applicant Details) */
+body.dark-mode .application-card tr[style*="#f2f2f2"] {
+    background-color: #2a2a2a !important;
+}
+
+/* Text */
+body.dark-mode .application-card p,
+body.dark-mode .application-card b,
+body.dark-mode .application-card span {
+    color: #ffffff !important;
+}
+
+/* Download button */
+body.dark-mode .application-card a {
+    background-color: #b72227 !important;
+    color: #ffffff !important;
+}
+
+/* Optional hover effect */
+body.dark-mode .application-card a:hover {
+    background-color: #8f1b1f !important;
+}
+

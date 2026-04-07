@@ -101,6 +101,18 @@
                 </li>
                 <?php } ?>
 
+                <?php if (hasPermission($role, 'view_applicants.php', $conn)) { ?>
+                <li class="<?php echo ($currentPage == 'view_applicants.php') ? 'active' : ''; ?>"> 
+                    <a href="view_applicants.php"><i class="fa fa-address-book-o" aria-hidden="true"></i> <span>Applicants</span></a>
+                </li>
+                <?php } ?>
+
+                <?php if (hasPermission($role, 'view_applications.php', $conn)) { ?>
+                <li class="<?php echo ($currentPage == 'view_applications.php') ? 'active' : ''; ?>"> 
+                    <a href="view_applications.php"><i class="fa fa-file-pdf-o" aria-hidden="true"></i> <span>Applications</span></a>
+                </li>
+                <?php } ?>
+
                 <?php if (hasPermission($role, 'reviews.php', $conn)) { ?>
                 <li class="<?php echo ($currentPage == 'reviews.php') ? 'active' : ''; ?>"> 
                     <a href="reviews.php"><i class="fa fa-star" aria-hidden="true"></i> <span>Reviews & Feedbacks</span></a>
