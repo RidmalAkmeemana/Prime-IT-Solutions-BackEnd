@@ -479,20 +479,95 @@ if (mysqli_num_rows($permission_query) > 0) {
 				e.preventDefault()
 				$('#pageLoader').show()
 
+				// $.ajax({
+				// 	type: 'POST',
+				// 	url: '../../API/Admin/updateApplicationStatus.php',
+				// 	data: $(this).serialize(),
+				// 	success: function(response) {
+				// 		if (typeof response === 'string') response = JSON.parse(response);
+				// 		showUpdateAlerts(response);
+				// 		console.log(response);
+				// 	},
+				// 	error: function(xhr, status, error) {
+				// 		console.error('Error:', status, error);
+				// 		$('#Update_Application_Status').modal('hide');
+				// 		$('#UpdateFailedModel').modal('show');
+				// 	},
+				// 	complete: function() {
+				// 		$('#pageLoader').hide();
+				// 	}
+				// })
+
 				$.ajax({
 					type: 'POST',
 					url: '../../API/Admin/updateApplicationStatus.php',
 					data: $(this).serialize(),
 					success: function(response) {
+
 						if (typeof response === 'string') response = JSON.parse(response);
 						showUpdateAlerts(response);
 						console.log(response);
+
+						if (response.success == true || response.success === 'true') {
+
+							const appId = $('#updateApplicationStatusForm input[name="Application_Id"]').val();
+							const status = $('#updateApplicationStatusForm input[name="Status"]').val();
+
+							// STATUS-WISE MESSAGE
+							let statusMessage = '';
+							switch (status) {
+								case 'Pending':
+									statusMessage = 'Your application has been <b>successfully submited</b>. Our team member will contact you shortly to discuss further details.';
+									break;
+								case 'Sort Listed':
+									statusMessage = '<b>Congratulations!</b> Your application have been <b>shortlisted</b>. Our team member will contact you shortly to discuss further details.';
+									break;
+								case 'Interview':
+									statusMessage = 'You have been selected for an <b>interview</b>. Our team member will contact you shortly to discuss further details.';
+									break;
+								case 'Hired':
+									statusMessage = '<b>Congratulations!</b> You have been <b>selected</b> for the position. Our team member will contact you shortly to discuss further details.';
+									break;
+								case 'Rejected':
+									statusMessage = 'We regret to inform you that your application was <b>not selected</b>.';
+									break;
+								default:
+									statusMessage = 'Your application status has been updated.';
+							}
+
+							// CALL EMAIL API
+							$.ajax({
+								type: 'POST',
+								url: '../../API/Admin/sendApplicationStatusEmail.php',
+								data: {
+									Application_Id: appId,
+									Status: status,
+									Message: statusMessage,
+									Job_Title: selectedApplicationData.Job_Title,
+									Job_Location: selectedApplicationData.Job_Location,
+									Job_Type: selectedApplicationData.Job_Type,
+									Applicant_Name: selectedApplicationData.Applicant_Name,
+									Applicant_Address: selectedApplicationData.Applicant_Address,
+									Applicant_Contact: selectedApplicationData.Applicant_Contact,
+									Applicant_Email: selectedApplicationData.Applicant_Email
+								},
+								success: function(emailRes) {
+									if (typeof emailRes === 'string') emailRes = JSON.parse(emailRes);
+									console.log('Email Response:', emailRes);
+								},
+								error: function(err) {
+									console.error('Email Error:', err);
+								}
+							});
+						}
 					},
+
 					error: function(xhr, status, error) {
 						console.error('Error:', status, error);
 						$('#Update_Application_Status').modal('hide');
 						$('#UpdateFailedModel').modal('show');
 					},
+
 					complete: function() {
 						$('#pageLoader').hide();
 					}
@@ -513,6 +588,8 @@ if (mysqli_num_rows($permission_query) > 0) {
 
 		});
 
+		let selectedApplicationData = {};
+
 		$(document).on("click", ".view-btn", function() {
 			let applicationId = $(this).data("id");
 
@@ -527,6 +604,8 @@ if (mysqli_num_rows($permission_query) > 0) {
 					let data = (typeof response === "string") ? JSON.parse(response) : response;
 
 					if (data.success === "true") {
+
+						selectedApplicationData = data;
 
 						let statusBadge = '';
 						if (data.Status === 'Pending') statusBadge = '<span class="badge badge-warning">Pending</span>';
