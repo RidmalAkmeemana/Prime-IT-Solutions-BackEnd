@@ -22,7 +22,7 @@ $user_status = $fetch['Status'];
 
 // Check if user has access to deleteApplication.php
 $has_access_to_delete_application = false;
-$permission_query = mysqli_query($conn, "SELECT * FROM `tbl_backend_permissions` WHERE `Role` = '$user_status' AND `Backend_Id` = 223") or die(mysqli_error());
+$permission_query = mysqli_query($conn, "SELECT * FROM `tbl_backend_permissions` WHERE `Role` = '$user_status' AND `Backend_Id` = 226") or die(mysqli_error());
 if (mysqli_num_rows($permission_query) > 0) {
 	$has_access_to_delete_application = true;
 }
@@ -35,7 +35,7 @@ if (mysqli_num_rows($permission_query) > 0) {
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
-	<title><?php echo ($companyName); ?> - Applications</title>
+	<title><?php echo ($companyName); ?> - Individuals</title>
 
 	<!-- Favicon -->
 	<link rel="shortcut icon" type="image/x-icon" href="assets/img/favicon.png">
@@ -195,10 +195,10 @@ if (mysqli_num_rows($permission_query) > 0) {
 				<div class="page-header">
 					<div class="row">
 						<div class="col-sm-7 col-auto">
-							<h3 class="page-title">Applications</h3>
+							<h3 class="page-title">Individuals</h3>
 							<ul class="breadcrumb">
 								<li class="breadcrumb-item"><a href="home.php">Dashboard</a></li>
-								<li class="breadcrumb-item active">Applications</li>
+								<li class="breadcrumb-item active">Individuals</li>
 							</ul>
 						</div>
 					</div>
@@ -222,7 +222,6 @@ if (mysqli_num_rows($permission_query) > 0) {
 												<th>Application Id</th>
 												<th>Job Title</th>
 												<th>Applicant Name</th>
-												<th>Job Type</th>
 												<th>Status</th>
 												<th>Action</th>
 											</tr>
@@ -286,13 +285,13 @@ if (mysqli_num_rows($permission_query) > 0) {
 		<div class="modal fade" id="Update_Application_Status">
 			<div class="modal-dialog">
 				<div class="modal-content">
-					<form method="POST" action="../../API/Admin/updateApplicationStatus.php" id="updateApplicationStatusForm" enctype="multipart/form-data">
+					<form method="POST" action="../../API/Admin/updateIndividualStatus.php" id="updateIndividualStatusForm" enctype="multipart/form-data">
 						<div class="modal-header">
 							<h5 class="modal-title">Update Application Status</h5>
 							<button type="button" class="close" data-dismiss="modal">&times;</button>
 						</div>
 						<div class="modal-body">
-							<input type="hidden" name="Application_Id">
+							<input type="hidden" name="Individuals_Id">
 							<input type="hidden" name="Status">
 							<p>Are you sure you want to change status to
 								<b id="updateStatusText"></b> ?
@@ -374,7 +373,7 @@ if (mysqli_num_rows($permission_query) > 0) {
 			// DATA TABLE FETCH
 			$.ajax({
 				type: 'POST',
-				url: '../../API/Admin/getAllApplicationData.php',
+				url: '../../API/Admin/getAllIndividualData.php',
 				dataType: 'json',
 				success: function(data) {
 					if (data.length > 0) {
@@ -383,7 +382,7 @@ if (mysqli_num_rows($permission_query) > 0) {
 						var table = $('.datatable').DataTable({
 							searching: true,
 							columnDefs: [{
-								targets: 5,
+								targets: 4,
 								className: 'text-center'
 							}]
 						});
@@ -396,13 +395,13 @@ if (mysqli_num_rows($permission_query) > 0) {
 							let actionButtons = `<div class="actions">`;
 
 							actionButtons += `<div class="actions">
-								<a class="btn btn-sm bg-success-light view-btn" href="javascript:void(0);" data-id="${row.Application_Id}"><i class="fe fe-eye"></i> View</a>`;
+								<a class="btn btn-sm bg-success-light view-btn" href="javascript:void(0);" data-id="${row.Individuals_Id}"><i class="fe fe-eye"></i> View</a>`;
 
 							if (canDelete) {
 								actionButtons += `
                                 <a href="javascript:void(0);"
                                 class="btn btn-sm bg-danger-light ms-1 delete-application-btn"
-                                data-id="${row.Application_Id}">
+                                data-id="${row.Individuals_Id}">
                                     <i class="fe fe-trash"></i> Delete
                                 </a>`;
 							}
@@ -418,10 +417,9 @@ if (mysqli_num_rows($permission_query) > 0) {
 							else if (applicationStatus === 'Interview') Status = '<span class="badge badge-info">Interview</span>';
 
 							table.row.add([
-								row.Application_Id,
+								row.Individuals_Id,
 								row.Job_Title,
 								row.Applicant_Name,
-								row.Job_Type,
 								Status,
 								actionButtons
 							]);
@@ -450,7 +448,7 @@ if (mysqli_num_rows($permission_query) > 0) {
 
 				$.ajax({
 					type: 'POST',
-					url: '../../API/Admin/deleteApplication.php',
+					url: '../../API/Admin/deleteIndividual.php',
 					data: $(this).serialize(),
 					success: function(response) {
 						if (typeof response === 'string') response = JSON.parse(response);
@@ -469,38 +467,19 @@ if (mysqli_num_rows($permission_query) > 0) {
 			});
 
 			$('#DeleteSuccessModel #OkBtn').click(function() {
-				window.location.href = 'view_applications.php';
+				window.location.href = 'view_individuals.php';
 			});
 
 			// ===============================
 			// UPDATE STATUS SUBMIT
 			// ===============================
-			$('#updateApplicationStatusForm').submit(function(e) {
+			$('#updateIndividualStatusForm').submit(function(e) {
 				e.preventDefault()
 				$('#pageLoader').show()
 
-				// $.ajax({
-				// 	type: 'POST',
-				// 	url: '../../API/Admin/updateApplicationStatus.php',
-				// 	data: $(this).serialize(),
-				// 	success: function(response) {
-				// 		if (typeof response === 'string') response = JSON.parse(response);
-				// 		showUpdateAlerts(response);
-				// 		console.log(response);
-				// 	},
-				// 	error: function(xhr, status, error) {
-				// 		console.error('Error:', status, error);
-				// 		$('#Update_Application_Status').modal('hide');
-				// 		$('#UpdateFailedModel').modal('show');
-				// 	},
-				// 	complete: function() {
-				// 		$('#pageLoader').hide();
-				// 	}
-				// })
-
 				$.ajax({
 					type: 'POST',
-					url: '../../API/Admin/updateApplicationStatus.php',
+					url: '../../API/Admin/updateIndividualStatus.php',
 					data: $(this).serialize(),
 					success: function(response) {
 
@@ -510,8 +489,8 @@ if (mysqli_num_rows($permission_query) > 0) {
 
 						if (response.success == true || response.success === 'true') {
 
-							const appId = $('#updateApplicationStatusForm input[name="Application_Id"]').val();
-							const status = $('#updateApplicationStatusForm input[name="Status"]').val();
+							const appId = $('#updateIndividualStatusForm input[name="Individuals_Id"]').val();
+							const status = $('#updateIndividualStatusForm input[name="Status"]').val();
 
 							// STATUS-WISE MESSAGE
 							let statusMessage = '';
@@ -538,14 +517,12 @@ if (mysqli_num_rows($permission_query) > 0) {
 							// CALL EMAIL API
 							$.ajax({
 								type: 'POST',
-								url: '../../API/Admin/sendApplicationStatusEmail.php',
+								url: '../../API/Admin/sendIndividualStatusEmail.php',
 								data: {
-									Application_Id: appId,
+									Individuals_Id: appId,
 									Status: status,
 									Message: statusMessage,
 									Job_Title: selectedApplicationData.Job_Title,
-									Job_Location: selectedApplicationData.Job_Location,
-									Job_Type: selectedApplicationData.Job_Type,
 									Applicant_Name: selectedApplicationData.Applicant_Name,
 									Applicant_Address: selectedApplicationData.Applicant_Address,
 									Applicant_Contact: selectedApplicationData.Applicant_Contact,
@@ -575,7 +552,7 @@ if (mysqli_num_rows($permission_query) > 0) {
 			});
 
 			$('#UpdateSuccessModel #OkBtn').click(function() {
-				window.location.href = 'view_applications.php';
+				window.location.href = 'view_individuals.php';
 			});
 
 			// CURRENCY INPUT VALIDATION
@@ -595,9 +572,9 @@ if (mysqli_num_rows($permission_query) > 0) {
 
 			$.ajax({
 				type: "POST",
-				url: "../../API/Admin/viewApplication.php",
+				url: "../../API/Admin/viewIndividual.php",
 				data: {
-					Application_Id: applicationId
+					Individuals_Id: applicationId
 				},
 				success: function(response) {
 
@@ -618,20 +595,20 @@ if (mysqli_num_rows($permission_query) > 0) {
 
 						if (data.Status === 'Pending') {
 							actionButtons = `
-								<button class="btn btn-secondary update-status" data-status="Sort Listed" data-id="${data.Application_Id}">Sort List</button>
-								<button class="btn btn-danger update-status ml-2" data-status="Rejected" data-id="${data.Application_Id}">Reject</button>
+								<button class="btn btn-secondary update-status" data-status="Sort Listed" data-id="${data.Individuals_Id}">Sort List</button>
+								<button class="btn btn-danger update-status ml-2" data-status="Rejected" data-id="${data.Individuals_Id}">Reject</button>
 							`;
 						} else if (data.Status === 'Sort Listed') {
 							actionButtons = `
-								<button class="btn btn-warning update-status" data-status="Pending" data-id="${data.Application_Id}">Pending</button>
-								<button class="btn btn-danger update-status ml-2" data-status="Rejected" data-id="${data.Application_Id}">Reject</button>
-								<button class="btn btn-info update-status ml-2" data-status="Interview" data-id="${data.Application_Id}">Interview</button>
+								<button class="btn btn-warning update-status" data-status="Pending" data-id="${data.Individuals_Id}">Pending</button>
+								<button class="btn btn-danger update-status ml-2" data-status="Rejected" data-id="${data.Individuals_Id}">Reject</button>
+								<button class="btn btn-info update-status ml-2" data-status="Interview" data-id="${data.Individuals_Id}">Interview</button>
 							`;
 						} else if (data.Status === 'Interview') {
 							actionButtons = `
-								<button class="btn btn-warning update-status" data-status="Pending" data-id="${data.Application_Id}">Pending</button>
-								<button class="btn btn-primary update-status ml-2" data-status="Hired" data-id="${data.Application_Id}">Hired</button>
-								<button class="btn btn-danger update-status ml-2" data-status="Rejected" data-id="${data.Application_Id}">Reject</button>	
+								<button class="btn btn-warning update-status" data-status="Pending" data-id="${data.Individuals_Id}">Pending</button>
+								<button class="btn btn-primary update-status ml-2" data-status="Hired" data-id="${data.Individuals_Id}">Hired</button>
+								<button class="btn btn-danger update-status ml-2" data-status="Rejected" data-id="${data.Individuals_Id}">Reject</button>	
 							`;
 						} else {
 							actionButtons = ''; // Rejected & Hired → no buttons
@@ -667,19 +644,11 @@ if (mysqli_num_rows($permission_query) > 0) {
 											</tr>
 											<tr>
 												<td><b>Application No</b></td>
-												<td>${data.Application_Id}</td>
+												<td>${data.Individuals_Id}</td>
 											</tr>
 											<tr>
 												<td><b>Job Title</b></td>
 												<td>${data.Job_Title}</td>
-											</tr>
-											<tr>
-												<td><b>Job Location</b></td>
-												<td>${data.Job_Location}</td>
-											</tr>
-											<tr>
-												<td><b>Job Type</b></td>
-												<td>${data.Job_Type}</td>
 											</tr>
 											<tr>
 												<td><b>Applicant Name</b></td>
@@ -724,7 +693,7 @@ if (mysqli_num_rows($permission_query) > 0) {
 			const Id = $(this).data('id')
 			const status = $(this).data('status')
 
-			$('#Update_Application_Status input[name="Application_Id"]').val(Id);
+			$('#Update_Application_Status input[name="Individuals_Id"]').val(Id);
 			$('#Update_Application_Status input[name="Status"]').val(status);
 
 			$('#applicationModal').fadeOut();

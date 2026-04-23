@@ -113,6 +113,12 @@
                 </li>
                 <?php } ?>
 
+                <?php if (hasPermission($role, 'view_individuals.php', $conn)) { ?>
+                <li class="<?php echo ($currentPage == 'view_individuals.php') ? 'active' : ''; ?>"> 
+                    <a href="view_individuals.php"><i class="fa fa-file-o" aria-hidden="true"></i> <span>Individuals</span></a>
+                </li>
+                <?php } ?>
+
                 <?php if (hasPermission($role, 'reviews.php', $conn)) { ?>
                 <li class="<?php echo ($currentPage == 'reviews.php') ? 'active' : ''; ?>"> 
                     <a href="reviews.php"><i class="fa fa-star" aria-hidden="true"></i> <span>Reviews & Feedbacks</span></a>

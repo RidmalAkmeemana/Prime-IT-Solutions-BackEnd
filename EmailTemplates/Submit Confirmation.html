@@ -3,14 +3,14 @@
         
         <!-- HEADER -->
         <tr>
-            <td style="background:#b19316;padding:20px;text-align:center;color:#ffffff;">
+            <td style="background:#b72227;padding:20px;text-align:center;color:#ffffff;">
                 <h2 style="margin:0;">Confirmation Email</h2>
             </td>
         </tr>
 
         <tr>
             <td style="padding-top:20px;text-align:center;">
-                <img src="https://uat.orbislk.com/Bloomdecouse/Web/Views/assets/img/logo.png" alt="Logo">
+                <img src="https://res.cloudinary.com/dy5ciybdm/image/upload/v1775457537/logo_f8qm5r.png" alt="Logo">
             </td>
         </tr>
 
@@ -18,25 +18,25 @@
         <tr>
             <td style="padding:30px;">
                 <p style="font-size:15px;color:#333;">
-                    Dear <b>${customerName}</b>,
+                    Dear <b>${formData.name}</b>,
                 </p>
 
                 <p style="font-size:14px;color:#555;">
-                    Thank you for choosing <b>${CompanyName}</b>.  
+                    Thank you for choosing <b>${company.Company_Name}</b>.  
                     Your inquiry has been <b>successfully submited</b>. Our team member will contact you shortly to discuss further details.
                 </p>
 
-                <p style="font-size:15px;color:#333;">Thanks & Regards <br><b>${CompanyName}</b>,</p>
+                <p style="font-size:15px;color:#333;">Thanks & Regards <br><b>${company.Company_Name}</b>,</p>
             </td>
         </tr>
 
         <!-- FOOTER -->
         <tr>
             <td style="background:#f9f9f9;padding:20px;text-align:center;font-size:12px;color:#777;">
-                <b>${CompanyName}</b><br>
-                ${CompanyAddress}<br>
-                Email: ${CompanyEmail}<br>
-                Contact: ${CompanyTel1}
+                <b>${company.Company_Name}</b><br>
+                ${company.Company_Address}<br>
+                Email: ${company.Company_Email}<br>
+                Contact: ${company.Company_Tel1}
             </td>
         </tr>
 
