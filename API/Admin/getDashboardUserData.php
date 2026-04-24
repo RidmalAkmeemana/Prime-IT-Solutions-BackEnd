@@ -17,165 +17,119 @@ function getCount($conn, $table) {
 }
 
 $counts = [];
+$counts['Count_Customers']   = getCount($conn, "tbl_customers");
+$counts['Count_Users']       = getCount($conn, "tbl_user");
+$counts['Count_Roles']       = getCount($conn, "tbl_roles");
+$counts['Count_Departments'] = getCount($conn, "tbl_departments");
+$counts['Count_Locations']   = getCount($conn, "tbl_locations");
+$counts['Count_Types']       = getCount($conn, "tbl_types");
+$counts['Count_Applications']= getCount($conn, "tbl_applications");
+$counts['Count_Inquiries']   = getCount($conn, "tbl_contact");
 
-// 2) Monetary Totals (Safe)
-$row = $conn->query("SELECT IFNULL(SUM(Grand_Total),0) AS s, IFNULL(SUM(Paid_Amount),0) AS p, IFNULL(SUM(Due_Total),0) AS d FROM tbl_invoice");
-$invoiceTotals = $row ? $row->fetch_assoc() : ['s'=>0,'p'=>0,'d'=>0];
+// 2) Extra Counts
+// Count of Active Vacancies
+$row3 = $conn->query("SELECT COUNT(*) AS cnt FROM tbl_vacancies WHERE Is_Active = 1");
+$counts['Count_ActiveVacancies'] = $row3 ? (int)$row3->fetch_assoc()['cnt'] : 0;
 
-$counts['Total_Sales'] = (float)$invoiceTotals['s'];
-$counts['Total_Paid'] = (float)$invoiceTotals['p'];
-$counts['Total_Outstanding'] = (float)$invoiceTotals['d'];
+// Count of Applicants
+$row4 = $conn->query("SELECT COUNT(*) AS cnt FROM tbl_applicants");
+$counts['Count_Applicants'] = $row4 ? (int)$row4->fetch_assoc()['cnt'] : 0;
 
-$row2 = $conn->query("SELECT IFNULL(SUM(Expense_Amount),0) AS expenses FROM tbl_expenses");
-$expTotals = $row2 ? $row2->fetch_assoc()['expenses'] : 0;
-$counts['Total_Expenses'] = (float)$expTotals;
+// Count of Pending Applications
+$row5 = $conn->query("SELECT COUNT(*) AS cnt FROM tbl_applications WHERE Status = 'Pending'");
+$counts['Count_PendingApplications'] = $row5 ? (int)$row5->fetch_assoc()['cnt'] : 0;
 
-// 3) Fast Moving Products (Top 15 by Qty Sold with Available Qty - Corrected)
-$fastProducts = [];
+// 3) Application Count per Status (Bar Graph)
+// Status values: Pending, Sort Listed, Rejected, Interview, Hired
+$applicationStatus = [];
 $q = $conn->query("
     SELECT 
-        p.Product_Id,
-        p.Product_Name,
-        b.Brand_Name,
-        c.Category_Name,
-        it.Product_Detail_Id,
-        IFNULL(SUM(it.Qty),0) AS qty_sold,
-        (
-            SELECT IFNULL(SUM(pd2.Qty),0)
-            FROM tbl_product_details pd2
-            WHERE pd2.Product_Id = p.Product_Id
-        ) AS available_qty
-    FROM tbl_item it
-    INNER JOIN tbl_product_details pd ON pd.Id = it.Product_Detail_Id
-    INNER JOIN tbl_product p ON p.Product_Id = pd.Product_Id
-    LEFT JOIN tbl_brand b ON b.Brand_Id = p.Brand_Id
-    LEFT JOIN tbl_category c ON c.Category_Id = p.Category_Id
-    GROUP BY it.Product_Detail_Id
-    HAVING qty_sold > 0
-    ORDER BY qty_sold DESC
-    LIMIT 10
+        Status AS status,
+        COUNT(*) AS count
+    FROM tbl_applications
+    GROUP BY Status
+    ORDER BY FIELD(Status, 'Pending', 'Sort Listed', 'Interview', 'Hired', 'Rejected')
 ");
-
-if($q){
-    while($r = $q->fetch_assoc()){
-        $fastProducts[] = [
-            'product_detail_id' => $r['Product_Detail_Id'],
-            'product_id' => $r['Product_Id'],
-            'product_name' => $r['Product_Name'],
-            'brand' => $r['Brand_Name'],
-            'category' => $r['Category_Name'],
-            'qty_sold' => (int)$r['qty_sold'],
-            'available_qty' => (int)$r['available_qty']
+if ($q) {
+    while ($r = $q->fetch_assoc()) {
+        $applicationStatus[] = [
+            'status' => $r['status'],
+            'count'  => (int)$r['count']
         ];
     }
 }
 
-// 4) Daily Sales of Last Month (Last 30 Days)
-$dailySales = [];
-
+// 4) Vacancies per Department (Pie Chart)
+$vacanciesByDept = [];
 $q = $conn->query("
     SELECT 
-        DATE(Invoice_Date) AS sale_date,
-        SUM(Grand_Total) AS total_sales
-    FROM tbl_invoice
-    WHERE Invoice_Date >= CURDATE() - INTERVAL 30 DAY
-    GROUP BY DATE(Invoice_Date)
-    ORDER BY sale_date ASC
+        d.Department_Name AS department,
+        COUNT(v.Id) AS count
+    FROM tbl_vacancies v
+    INNER JOIN tbl_departments d ON d.Id = v.Department_Id
+    GROUP BY v.Department_Id
+    ORDER BY count DESC
 ");
-
-if($q){
-    while($r = $q->fetch_assoc()){
-        $dailySales[] = [
-            'date' => $r['sale_date'],
-            'total_sales' => (float)$r['total_sales']
+if ($q) {
+    while ($r = $q->fetch_assoc()) {
+        $vacanciesByDept[] = [
+            'department' => $r['department'],
+            'count'      => (int)$r['count']
         ];
     }
 }
 
-// 5) Top 10 Users with highest billing
-$topUsers = [];
+// 5) Top 5 Vacancies with Most Applications (Bar Graph)
+$topVacanciesByApplications = [];
 $q = $conn->query("
     SELECT 
-        u.Id,
-        CONCAT(u.First_Name, ' ', u.Last_Name) AS user_name,
-        COUNT(i.Invoice_Id) AS invoice_count,
-        IFNULL(SUM(i.Grand_Total),0) AS total_sales
-    FROM tbl_user u
-    LEFT JOIN tbl_invoice i ON i.User_Id = u.Id
-    GROUP BY u.Id
-    HAVING total_sales > 0
-    ORDER BY total_sales DESC
-    LIMIT 10
-");
-
-if($q){
-    while($r = $q->fetch_assoc()){
-        $topUsers[] = [
-            'user_id' => $r['Id'],
-            'user_name' => $r['user_name'],
-            'invoice_count' => (int)$r['invoice_count'],
-            'total_sales' => (float)$r['total_sales']
-        ];
-    }
-}
-
-// 6) Most Used Payment Methods
-$paymentMethods = [];
-$q = $conn->query("
-    SELECT 
-        Payment_Type,
-        COUNT(*) AS usage_count
-    FROM tbl_invoice
-    GROUP BY Payment_Type
-    ORDER BY usage_count DESC
+        v.Job_Title AS job_title,
+        v.Vacancy_Id AS vacancy_id,
+        COUNT(a.Id) AS application_count
+    FROM tbl_vacancies v
+    INNER JOIN tbl_applications a ON a.Vacancy_Id = v.Vacancy_Id
+    GROUP BY v.Vacancy_Id
+    ORDER BY application_count DESC
     LIMIT 5
 ");
-
-if($q){
-    while($r = $q->fetch_assoc()){
-        $paymentMethods[] = [
-            'method' => $r['Payment_Type'],
-            'usage_count' => (int)$r['usage_count']
+if ($q) {
+    while ($r = $q->fetch_assoc()) {
+        $topVacanciesByApplications[] = [
+            'job_title'         => $r['job_title'],
+            'vacancy_id'        => $r['vacancy_id'],
+            'application_count' => (int)$r['application_count']
         ];
     }
 }
 
-// 7) Top 10 Customers (Highest Billing)
-$topCustomers = [];
+// 6) Vacancies by Location
+$vacanciesByLocation = [];
 $q = $conn->query("
     SELECT 
-        c.Customer_Name,
-        COALESCE(c.Customer_Address, 'N/A') AS Customer_Address,
-        COALESCE(c.Customer_Contact, 'N/A') AS Customer_Contact,
-        COALESCE(c.Customer_Email, 'N/A') AS Customer_Email,
-        SUM(i.Grand_Total) AS total_spent
-    FROM tbl_customers c 
-    INNER JOIN tbl_invoice i ON i.Customer_Id = c.Customer_Id
-    GROUP BY c.Customer_Id
-    ORDER BY total_spent DESC
-    LIMIT 10
+        l.Location_Name AS location,
+        COUNT(v.Id) AS count
+    FROM tbl_vacancies v
+    INNER JOIN tbl_locations l ON l.Id = v.Location_Id
+    GROUP BY v.Location_Id
+    ORDER BY count DESC
 ");
-
-if($q){
-    while($r = $q->fetch_assoc()){
-        $topCustomers[] = [
-            'customer_name' => $r['Customer_Name'],
-            'address' => $r['Customer_Address'],
-            'contact_no' => $r['Customer_Contact'],
-            'email' => $r['Customer_Email']
+if ($q) {
+    while ($r = $q->fetch_assoc()) {
+        $vacanciesByLocation[] = [
+            'location' => $r['location'],
+            'count'    => (int)$r['count']
         ];
     }
 }
 
 // FINAL RESPONSE
 echo json_encode([
-    'success' => 'true',
-    'pageData' => $counts,
-    'fastProducts' => $fastProducts,
-    'dailySales' => $dailySales,
-    'topUsers' => $topUsers,
-    'paymentMethods' => $paymentMethods,
-    'topCustomers' => $topCustomers
+    'success'                    => 'true',
+    'pageData'                   => $counts,
+    'applicationStatus'          => $applicationStatus,
+    'vacanciesByDept'            => $vacanciesByDept,
+    'topVacanciesByApplications' => $topVacanciesByApplications,
+    'vacanciesByLocation'        => $vacanciesByLocation
 ]);
 
 $conn->close();

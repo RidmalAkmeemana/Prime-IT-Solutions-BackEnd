@@ -119,9 +119,17 @@
                 </li>
                 <?php } ?>
 
+                <p class="menu-title" style="color:#949494;"><span>Site Management</span></p>
+
                 <?php if (hasPermission($role, 'reviews.php', $conn)) { ?>
                 <li class="<?php echo ($currentPage == 'reviews.php') ? 'active' : ''; ?>"> 
                     <a href="reviews.php"><i class="fa fa-star" aria-hidden="true"></i> <span>Reviews & Feedbacks</span></a>
+                </li>
+                <?php } ?>
+
+                <?php if (hasPermission($role, 'inquiries.php', $conn)) { ?>
+                <li class="<?php echo ($currentPage == 'inquiries.php') ? 'active' : ''; ?>"> 
+                    <a href="inquiries.php"><i class="fa fa-check-square" aria-hidden="true"></i> <span>Inquiries</span></a>
                 </li>
                 <?php } ?>
 

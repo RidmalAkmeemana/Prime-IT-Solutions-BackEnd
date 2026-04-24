@@ -13,6 +13,10 @@
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
+    <!-- Leaflet.js (Free, No API Key) -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
     <style>
         .tile-number {
             font-size: 22px;
@@ -22,6 +26,34 @@
         .tile-label {
             font-size: 13px;
             color: #666;
+        }
+
+        #vacanciesMap {
+            width: 100%;
+            height: 450px;
+            border-radius: 6px;
+            z-index: 0;
+        }
+
+        .map-legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 12px;
+        }
+
+        .map-legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+        }
+
+        .map-legend-dot {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            flex-shrink: 0;
         }
     </style>
 </head>
@@ -35,121 +67,53 @@
         <!-- Counts -->
         <div class="row g-3 mb-3" id="tiles-counts"></div>
 
-        <!-- Daily Sales From Last Month -->
+        <!-- ROW 1: Application Count per Status (Full Width Bar Graph) -->
         <div class="row mb-4">
             <div class="col-md-12">
                 <div class="card">
                     <div class="card-body">
-                        <h5 class="card-title text-center">Daily Sales (Last 30 Days)</h5>
-                        <canvas id="dailySalesChart" height="120"></canvas>
-                        <div id="dailySalesNoData" class="text-center py-5 my-xl-3 text-muted" style="display:none;"><strong>No Results</strong></div>
+                        <h5 class="card-title text-center">Application Count by Status</h5>
+                        <canvas id="applicationStatusChart" height="80"></canvas>
+                        <div id="applicationStatusNoData" class="text-center py-5 my-xl-3 text-muted" style="display:none;"><strong>No Results</strong></div>
                     </div>
                 </div>
             </div>
         </div>
-        <!-- Daily Sales From Last Month -->
 
+        <!-- ROW 2: Vacancies per Department (Pie) + Top 5 Vacancies by Applications (Bar) -->
         <div class="row mb-4">
-
-            <!-- Pie Chart -->
-            <div class="col-md-4">
+            <div class="col-md-6">
                 <div class="card">
                     <div class="card-body">
-                        <h5 class="card-title text-center">Top 10 Moving Products</h5>
-                        <canvas id="fastProductPie"></canvas>
-                        <div id="fastProductNoData" class="text-center py-5 my-xl-3 text-muted" style="display:none;"><strong>No Results</strong></div>
+                        <h5 class="card-title text-center">Vacancies by Department</h5>
+                        <canvas id="vacanciesByDeptChart"></canvas>
+                        <div id="vacanciesByDeptNoData" class="text-center py-5 my-xl-3 text-muted" style="display:none;"><strong>No Results</strong></div>
                     </div>
                 </div>
             </div>
-            <!-- Pie Chart -->
-
-            <!-- Top Users Bubble Chart -->
-            <div class="col-md-4">
+            <div class="col-md-6">
                 <div class="card">
                     <div class="card-body">
-                        <h5 class="card-title text-center">Top 10 Users by Billing</h5>
-                        <canvas id="topUsersBubble" height="300"></canvas>
-                        <div id="topUsersNoData" class="text-center py-5 my-xl-3 text-muted" style="display:none;"><strong>No Results</strong></div>
+                        <h5 class="card-title text-center">Top 5 Vacancies by Applications</h5>
+                        <canvas id="topVacanciesChart"></canvas>
+                        <div id="topVacanciesNoData" class="text-center py-5 my-xl-3 text-muted" style="display:none;"><strong>No Results</strong></div>
                     </div>
                 </div>
             </div>
-            <!-- Top Users Bubble Chart -->
-
-            <!-- Most Used Payment Methods -->
-            <div class="col-md-4">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title text-center">Most Used Payment Methods</h5>
-                        <canvas id="paymentMethodBar" height="300"></canvas>
-                        <div id="paymentMethodNoData" class="text-center py-5 my-xl-3 text-muted" style="display:none;"><strong>No Results</strong></div>
-                    </div>
-                </div>
-            </div>
-            <!-- Most Used Payment Methods -->
         </div>
 
+        <!-- ROW 3: Vacancies by Location on Leaflet Map (Full Width) -->
         <div class="row mb-4">
-            <!-- Fast Moving Products -->
-            <div class="col-md-6">
+            <div class="col-md-12">
                 <div class="card">
                     <div class="card-body">
-                        <h5 class="card-title text-center">Top 10 Moving Product Details</h5>
-                        <div class="table-responsive">
-                            <table class="table table-hover table-center" id="fastProductTable">
-                                <thead class="table-light">
-                                    <tr>
-                                        <th>#</th>
-                                        <th>Product Code</th>
-                                        <th>Product Name</th>
-                                        <th>Sold Qty</th>
-                                        <th>Available Qty</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr id="fastProductTableNoData" style="display:none;">
-                                        <td colspan="5" class="text-center py-5 my-xl-3 text-muted">
-                                            <strong>No Results</strong>
-                                        </td>
-                                    </tr>
-                                    <!-- Rows will be injected dynamically -->
-                                </tbody>
-                            </table>
-                        </div>
+                        <h5 class="card-title text-center">Vacancies by Location</h5>
+                        <div id="vacanciesMapNoData" class="text-center py-5 text-muted" style="display:none;"><strong>No Results</strong></div>
+                        <div id="vacanciesMap"></div>
+                        <div class="map-legend" id="mapLegend"></div>
                     </div>
                 </div>
             </div>
-            <!-- Fast Moving Products -->
-
-            <!-- Top 10 Customers Table -->
-            <div class="col-md-6">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title text-center">Top 10 Customers by Billing</h5>
-                        <div class="table-responsive">
-                            <table class="table table-hover table-center" id="topCustomersTable">
-                                <thead class="table-light">
-                                    <tr>
-                                        <th>#</th>
-                                        <th>Customer Name</th>
-                                        <th>Address</th>
-                                        <th>Contact No</th>
-                                        <th>Email</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                <tr id="topCustomersNoData" style="display:none;">
-                                    <td colspan="5" class="text-center py-5 my-xl-3 text-muted">
-                                        <strong>No Results</strong>
-                                    </td>
-                                </tr>
-                                    <!-- Rows will be injected -->
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- Top 10 Customers Table -->
         </div>
 
     </div>
@@ -167,7 +131,7 @@
 
         // --- Make Tile HTML with card ---
         function makeTileHtml(label, value) {
-            return `<div class="col-sm-6 col-md-2 mb-3">
+            return `<div class="col-sm-6 col-md-3 mb-3">
         <div class="card">
             <div class="card-body text-center p-3">
                 <div class="tile-number" data-target="${value}">0</div>
@@ -216,16 +180,12 @@
             const countFields = [
                 ['Users', pageData.Count_Users || 0],
                 ['User Roles', pageData.Count_Roles || 0],
-                ['Suppliers', pageData.Count_Suppliers || 0],
                 ['Registered Customers', pageData.Count_Customers || 0],
-                ['Brands', pageData.Count_Brands || 0],
-                ['Categories', pageData.Count_Categories || 0],
-                ['Products', pageData.Count_Products || 0],
-                ['Expenses Types', pageData.Count_Expenses_Types || 0],
-                ['Expenses Categories', pageData.Count_Expenses_Categories || 0],
-                ['Count of Expenses', pageData.Count_Expenses || 0],
-                ['Invoices', pageData.Count_Invoices || 0],
-                ['Quotations', pageData.Count_Quotations || 0]
+                ['Departments', pageData.Count_Departments || 0],
+                ['Locations', pageData.Count_Locations || 0],
+                ['Job Types', pageData.Count_Types || 0],
+                ['Applications', pageData.Count_Applications || 0],
+                ['Inquiries', pageData.Count_Inquiries || 0]
             ];
             countFields.forEach(([label, val]) => countsHtml += makeTileHtml(label, val));
             document.getElementById('tiles-counts').innerHTML = countsHtml;
@@ -236,338 +196,67 @@
                 <div class="col-md-4 mb-3">
                     <div class="card">
                         <div class="card-body text-center">
-                            <div class="tile-number" data-target="${pageData.Total_Sales || 0}">0</div>
-                            <div class="tile-label">Total Sales</div>
+                            <div class="tile-number" data-target="${pageData.Count_ActiveVacancies || 0}">0</div>
+                            <div class="tile-label">Active Vacancies</div>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-4 mb-3">
                     <div class="card">
                         <div class="card-body text-center">
-                            <div class="tile-number" data-target="${pageData.Total_Expenses || 0}">0</div>
-                            <div class="tile-label">Total Expenses</div>
+                            <div class="tile-number" data-target="${pageData.Count_Applicants || 0}">0</div>
+                            <div class="tile-label">Total Applicants</div>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-4 mb-3">
                     <div class="card">
                         <div class="card-body text-center">
-                            <div class="tile-number" data-target="${pageData.Total_Outstanding || 0}">0</div>
-                            <div class="tile-label">Total Outstanding</div>
+                            <div class="tile-number" data-target="${pageData.Count_PendingApplications || 0}">0</div>
+                            <div class="tile-label">Pending Applications</div>
                         </div>
                     </div>
                 </div>
                 `;
             document.getElementById('tiles-money').innerHTML = moneyHtml;
-            animateNumbers('#tiles-money', 800, true);
+            animateNumbers('#tiles-money', 800, false);
         }
 
-        // --- Render Fast Moving Products Pie & Table ---
-        function renderFastProductsPie(data) {
+        // --- Chart 1: Application Count per Status (Bar Graph) ---
+        function renderApplicationStatus(data) {
+            const canvas = document.getElementById('applicationStatusChart');
+            const noData = document.getElementById('applicationStatusNoData');
 
-            const canvas = document.getElementById("fastProductPie");
-            const noDataText = document.getElementById("fastProductNoData");
-
-            const tableBody = document.querySelector("#fastProductTable tbody");
-            const noDataRow = document.getElementById("fastProductTableNoData");
-
-            // ----------------------------
-            // CASE 1: NO DATA
-            // ----------------------------
-            if (!data.fastProducts || data.fastProducts.length === 0) {
-
-                // Hide chart, show "No Results"
-                canvas.style.display = "none";
-                noDataText.style.display = "block";
-
-                // Clear table rows and show No Results row
-                tableBody.querySelectorAll("tr:not(#fastProductTableNoData)").forEach(tr => tr.remove());
-                noDataRow.style.display = "table-row";
-
+            if (!data.applicationStatus || data.applicationStatus.length === 0) {
+                canvas.style.display = 'none';
+                noData.style.display = 'block';
                 return;
             }
 
-            // ----------------------------
-            // CASE 2: DATA EXISTS
-            // ----------------------------
+            canvas.style.display = 'block';
+            noData.style.display = 'none';
 
-            // Show chart, hide "No Results"
-            canvas.style.display = "block";
-            noDataText.style.display = "none";
+            const colorMap = {
+                'Pending':     '#f39c12',
+                'Sort Listed': '#009efb',
+                'Interview':   '#8207DB',
+                'Hired':       '#26af48',
+                'Rejected':    '#e74c3c'
+            };
 
-            // Hide table No Results row
-            noDataRow.style.display = "none";
-
-            // Clear existing table rows
-            tableBody.querySelectorAll("tr:not(#fastProductTableNoData)").forEach(tr => tr.remove());
-
-            // Render Pie Chart
-            const labels = data.fastProducts.map(p => p.product_name);
-            const qtySold = data.fastProducts.map(p => p.qty_sold);
-
-            const colors = ['#b19316', '#000000', '#26af48', '#009efb', '#f39c12',
-                '#8207DB', '#53EAFD', '#FFA2A2', '#162456', '#31C950'
-            ];
+            const labels = data.applicationStatus.map(r => r.status);
+            const counts = data.applicationStatus.map(r => r.count);
+            const bgColors = labels.map(l => colorMap[l] || '#b19316');
 
             new Chart(canvas, {
-                type: 'pie',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: "Qty Sold",
-                        data: qtySold,
-                        backgroundColor: labels.map((_, i) => colors[i % colors.length])
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    const index = context.dataIndex;
-                                    const p = data.fastProducts[index];
-                                    return [
-                                        `Code: ${p.product_id}`,
-                                        `Brand: ${p.brand}`,
-                                        `Category: ${p.category}`,
-                                        `Qty Sold: ${p.qty_sold}`,
-                                        `Available Qty: ${p.available_qty}`
-                                    ];
-                                }
-                            }
-                        },
-                        legend: {
-                            position: 'right',
-                            labels: {
-                                font: {
-                                    size: 12
-                                }
-                            }
-                        }
-                    }
-                }
-            });
-
-            // Fill Table Rows
-            data.fastProducts.forEach((p, index) => {
-                const tr = document.createElement("tr");
-                tr.innerHTML = `
-                    <td>${index + 1}</td>
-                    <td>${p.product_id}</td>
-                    <td>${p.product_name}</td>
-                    <td>${p.qty_sold}</td>
-                    <td>${p.available_qty}</td>
-                `;
-                tableBody.appendChild(tr);
-            });
-        }
-
-
-        // --- Render Daily Sales Bar Chart ---
-        function renderDailySalesChart(data) {
-
-            const chartCanvas = document.getElementById("dailySalesChart");
-            const noDataText = document.getElementById("dailySalesNoData");
-
-            // If no data → show "No Results", hide canvas, stop rendering
-            if (!data.dailySales || data.dailySales.length === 0) {
-                chartCanvas.style.display = "none";
-                noDataText.style.display = "block";
-                return;
-            }
-
-            // If data exists → show chart, hide "No Results"
-            chartCanvas.style.display = "block";
-            noDataText.style.display = "none";
-
-            const ctx = chartCanvas;
-
-            const labels = data.dailySales.map(s => s.date);
-            const sales = data.dailySales.map(s => s.total_sales);
-
-            // Two color alternating pattern
-            const colors = sales.map((_, i) => i % 2 === 0 ? "#b19316" : "#000000");
-
-            new Chart(ctx, {
                 type: 'bar',
                 data: {
                     labels: labels,
                     datasets: [{
-                        label: "Daily Sales (LKR)",
-                        data: sales,
-                        backgroundColor: colors
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    scales: {
-                        x: {
-                            ticks: {
-                                font: {
-                                    size: 11
-                                }
-                            }
-                        },
-                        y: {
-                            ticks: {
-                                font: {
-                                    size: 11
-                                }
-                            },
-                            beginAtZero: true
-                        }
-                    },
-                    plugins: {
-                        legend: {
-                            display: false
-                        },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    return "LKR " + Number(context.raw).toLocaleString(undefined, {
-                                        minimumFractionDigits: 2
-                                    });
-                                }
-                            }
-                        }
-                    }
-                }
-            });
-        }
-
-
-        // --- Render Top Users Bubble Chart ---
-        function renderTopUsersBubble(data) {
-            const canvas = document.getElementById("topUsersBubble");
-            const noData = document.getElementById("topUsersNoData");
-
-            if (!data.topUsers || data.topUsers.length === 0) {
-                // Hide chart
-                canvas.style.display = "none";
-                // Show no results message
-                noData.style.display = "block";
-                return;
-            }
-
-            // Show chart
-            canvas.style.display = "block";
-            // Hide no results message
-            noData.style.display = "none";
-
-            const ctx = canvas;
-
-            const colors = ['#b19316', '#000000', '#26af48', '#009efb', '#f39c12', '#8207DB', '#53EAFD', '#FFA2A2', '#162456', '#31C950'];
-
-            const userColorMap = {};
-            let colorIndex = 0;
-
-            const chartData = data.topUsers.map(u => {
-                if (!userColorMap[u.user_id]) {
-                    userColorMap[u.user_id] = colors[colorIndex % colors.length];
-                    colorIndex++;
-                }
-
-                const baseColor = userColorMap[u.user_id];
-
-                return {
-                    x: u.invoice_count,
-                    y: u.total_sales,
-                    r: Math.max(8, Math.min(u.total_sales / 5000, 30)),
-                    label: u.user_name,
-                    color: baseColor
-                };
-            });
-
-            new Chart(ctx, {
-                type: 'bubble',
-                data: {
-                    datasets: [{
-                        label: "Users",
-                        data: chartData,
-                        backgroundColor: chartData.map(p => hexToRgba(p.color, 0.65)),
-                        borderColor: chartData.map(p => hexToRgba(p.color, 1)),
-                        borderWidth: 1.5
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    const d = context.raw;
-                                    return [
-                                        `User: ${d.label}`,
-                                        `Invoices: ${d.x}`,
-                                        `Sales: LKR ${Number(d.y).toLocaleString(undefined, { minimumFractionDigits: 2 })}`
-                                    ];
-                                }
-                            }
-                        },
-                        legend: { display: false }
-                    },
-                    scales: {
-                        x: {
-                            title: {
-                                display: true,
-                                text: 'Invoice Count',
-                                font: { size: 14 }
-                            }
-                        },
-                        y: {
-                            title: {
-                                display: true,
-                                text: 'Total Sales (LKR)',
-                                font: { size: 14 }
-                            }
-                        }
-                    }
-                }
-            });
-        }
-
-
-        // Convert HEX to RGBA for smooth opacity
-        function hexToRgba(hex, opacity) {
-            const r = parseInt(hex.slice(1, 3), 16);
-            const g = parseInt(hex.slice(3, 5), 16);
-            const b = parseInt(hex.slice(5, 7), 16);
-            return `rgba(${r},${g},${b},${opacity})`;
-        }
-
-        // --- Render Most Used Payment Methods Bar Graph ---
-        function renderPaymentMethodBar(data) {
-            const canvas = document.getElementById("paymentMethodBar");
-            const noData = document.getElementById("paymentMethodNoData");
-
-            // No results case
-            if (!data.paymentMethods || data.paymentMethods.length === 0) {
-                canvas.style.display = "none";
-                noData.style.display = "block";
-                return;
-            }
-
-            // Show normal chart
-            canvas.style.display = "block";
-            noData.style.display = "none";
-
-            const ctx = canvas;
-
-            const labels = data.paymentMethods.map(p => p.method);
-            const counts = data.paymentMethods.map(p => p.usage_count);
-
-            const barColors = ['#b19316', '#000000', '#26af48', '#009efb', '#f39c12'];
-
-            new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: "Usage Count",
+                        label: 'Applications',
                         data: counts,
-                        backgroundColor: labels.map((_, i) => barColors[i % barColors.length]),
-                        borderColor: labels.map((_, i) => barColors[i % barColors.length]),
+                        backgroundColor: bgColors,
+                        borderColor: bgColors,
                         borderWidth: 1
                     }]
                 },
@@ -577,63 +266,227 @@
                         legend: { display: false },
                         tooltip: {
                             callbacks: {
-                                label: (context) => `Used: ${context.raw} times`
+                                label: ctx => ` Count: ${ctx.raw}`
                             }
                         }
                     },
                     scales: {
-                        x: {
-                            title: {
-                                display: true,
-                                text: 'Payment Method'
-                            }
-                        },
+                        x: { title: { display: true, text: 'Application Status' } },
                         y: {
-                            title: {
-                                display: true,
-                                text: 'Usage Count'
-                            },
-                            beginAtZero: true
+                            beginAtZero: true,
+                            ticks: { stepSize: 1 },
+                            title: { display: true, text: 'Number of Applications' }
                         }
                     }
                 }
             });
         }
 
+        // --- Chart 2: Vacancies per Department (Pie Chart) ---
+        function renderVacanciesByDept(data) {
+            const canvas = document.getElementById('vacanciesByDeptChart');
+            const noData = document.getElementById('vacanciesByDeptNoData');
 
-        // --- Render Top Customers Table ---
-        function renderTopCustomers(data) {
-            const tbody = document.querySelector("#topCustomersTable tbody");
-            const noDataRow = document.getElementById("topCustomersNoData");
-
-            // No results case
-            if (!data.topCustomers || data.topCustomers.length === 0) {
-                tbody.innerHTML = ""; 
-                tbody.appendChild(noDataRow);
-                noDataRow.style.display = "table-row";
+            if (!data.vacanciesByDept || data.vacanciesByDept.length === 0) {
+                canvas.style.display = 'none';
+                noData.style.display = 'block';
                 return;
             }
 
-            // Results available → hide no-data row
-            noDataRow.style.display = "none";
+            canvas.style.display = 'block';
+            noData.style.display = 'none';
 
-            // Clear existing rows
-            tbody.innerHTML = "";
+            const labels = data.vacanciesByDept.map(r => r.department);
+            const counts = data.vacanciesByDept.map(r => r.count);
+            const colors = ['#b19316', '#000000', '#26af48', '#009efb', '#f39c12', '#8207DB', '#53EAFD', '#FFA2A2', '#162456', '#31C950'];
 
-            // Append dynamic rows
-            data.topCustomers.forEach((c, index) => {
-                const tr = document.createElement("tr");
-                tr.innerHTML = `
-                    <td>${index + 1}</td>
-                    <td>${c.customer_name}</td>
-                    <td>${c.address}</td>
-                    <td>${c.contact_no}</td>
-                    <td>${c.email}</td>
-                `;
-                tbody.appendChild(tr);
+            new Chart(canvas, {
+                type: 'pie',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: counts,
+                        backgroundColor: labels.map((_, i) => colors[i % colors.length]),
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { position: 'right' },
+                        tooltip: {
+                            callbacks: {
+                                label: ctx => ` ${ctx.label}: ${ctx.raw} Vacancies`
+                            }
+                        }
+                    }
+                }
             });
         }
 
+        // --- Chart 3: Top 5 Vacancies with Most Applications (Horizontal Bar Graph) ---
+        function renderTopVacanciesByApplications(data) {
+            const canvas = document.getElementById('topVacanciesChart');
+            const noData = document.getElementById('topVacanciesNoData');
+
+            if (!data.topVacanciesByApplications || data.topVacanciesByApplications.length === 0) {
+                canvas.style.display = 'none';
+                noData.style.display = 'block';
+                return;
+            }
+
+            canvas.style.display = 'block';
+            noData.style.display = 'none';
+
+            const labels = data.topVacanciesByApplications.map(r => r.job_title);
+            const counts = data.topVacanciesByApplications.map(r => r.application_count);
+            const colors = ['#b19316', '#26af48', '#009efb', '#8207DB', '#f39c12'];
+
+            new Chart(canvas, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Applications',
+                        data: counts,
+                        backgroundColor: colors,
+                        borderColor: colors,
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: ctx => ` Applications: ${ctx.raw}`
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            ticks: { stepSize: 1 },
+                            title: { display: true, text: 'Number of Applications' }
+                        }
+                    }
+                }
+            });
+        }
+
+        // --- Map: Vacancies by Location using Leaflet.js + OpenStreetMap (FREE) ---
+        function renderVacanciesMap(data) {
+            const mapDiv    = document.getElementById('vacanciesMap');
+            const noData    = document.getElementById('vacanciesMapNoData');
+            const legendDiv = document.getElementById('mapLegend');
+
+            // Filter out "Remote" — not a geocodable place
+            const locations = (data.vacanciesByLocation || []).filter(
+                r => r.location.toLowerCase() !== 'remote'
+            );
+
+            if (locations.length === 0) {
+                mapDiv.style.display = 'none';
+                noData.style.display = 'block';
+                legendDiv.style.display = 'none';
+                return;
+            }
+
+            mapDiv.style.display = 'block';
+            noData.style.display = 'none';
+            legendDiv.innerHTML  = '';
+
+            const pinColors = ['#b19316', '#26af48', '#009efb', '#8207DB', '#f39c12', '#e74c3c', '#53EAFD', '#162456', '#31C950', '#000000'];
+
+            // Initialize Leaflet map centered on Sri Lanka
+            const map = L.map('vacanciesMap').setView([7.8731, 80.7718], 8);
+
+            // OpenStreetMap tile layer — FREE, no API key
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+                maxZoom: 18
+            }).addTo(map);
+
+            const bounds = [];
+            let geocoded = 0;
+
+            locations.forEach((loc, i) => {
+                const color = pinColors[i % pinColors.length];
+
+                // Nominatim — FREE geocoding by OpenStreetMap (no key needed)
+                const query = encodeURIComponent(loc.location);
+                fetch(`https://nominatim.openstreetmap.org/search?q=${query}&format=json&limit=1`)
+                    .then(res => res.json())
+                    .then(results => {
+                        geocoded++;
+
+                        if (results && results.length > 0) {
+                            const lat = parseFloat(results[0].lat);
+                            const lng = parseFloat(results[0].lon);
+                            bounds.push([lat, lng]);
+
+                            // Custom coloured circle marker
+                            const marker = L.circleMarker([lat, lng], {
+                                radius: 14,
+                                fillColor: color,
+                                color: '#ffffff',
+                                weight: 2,
+                                opacity: 1,
+                                fillOpacity: 0.9
+                            }).addTo(map);
+
+                            // Vacancy count label inside marker using divIcon
+                            const icon = L.divIcon({
+                                className: '',
+                                html: `<div style="
+                                    background:${color};
+                                    color:#fff;
+                                    border: 2px solid #fff;
+                                    border-radius: 50%;
+                                    width: 30px;
+                                    height: 30px;
+                                    display: flex;
+                                    align-items: center;
+                                    justify-content: center;
+                                    font-weight: 700;
+                                    font-size: 12px;
+                                    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+                                ">${loc.count}</div>`,
+                                iconSize: [30, 30],
+                                iconAnchor: [15, 15]
+                            });
+
+                            L.marker([lat, lng], { icon })
+                                .addTo(map)
+                                .bindPopup(`
+                                    <div style="padding:4px 2px; min-width:140px;">
+                                        <strong style="font-size:14px;">${loc.location}</strong><br>
+                                        <span style="color:#555; font-size:13px;">
+                                            Vacancies: <strong>${loc.count}</strong>
+                                        </span>
+                                    </div>
+                                `);
+                        }
+
+                        // Fit map to all markers after last geocode
+                        if (geocoded === locations.length && bounds.length > 0) {
+                            map.fitBounds(bounds, { padding: [40, 40] });
+                        }
+
+                        // Build legend
+                        const item = document.createElement('div');
+                        item.className = 'map-legend-item';
+                        item.innerHTML = `
+                            <div class="map-legend-dot" style="background:${color};"></div>
+                            <span>${loc.location} &mdash; <strong>${loc.count}</strong> ${loc.count === 1 ? 'vacancy' : 'vacancies'}</span>
+                        `;
+                        legendDiv.appendChild(item);
+                    })
+                    .catch(() => { geocoded++; });
+            });
+        }
 
         // --- Fetch Dashboard Data ---
         function fetchDashboard() {
@@ -647,11 +500,10 @@
                         return;
                     }
                     renderTiles(res.pageData || {});
-                    renderFastProductsPie(res);
-                    renderDailySalesChart(res);
-                    renderTopUsersBubble(res);
-                    renderPaymentMethodBar(res);
-                    renderTopCustomers(res);
+                    renderApplicationStatus(res);
+                    renderVacanciesByDept(res);
+                    renderTopVacanciesByApplications(res);
+                    renderVacanciesMap(res);
                 }
             });
         }
