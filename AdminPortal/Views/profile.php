@@ -55,7 +55,7 @@ if ($result && mysqli_num_rows($result) > 0) {
 			width: 36px;
 			height: 36px;
 			border-radius: 50%;
-			background-color: #b72227;
+			background-color: #1b5d94;
 			border: 0px;
 			color: #fff;
 			display: flex;
@@ -73,12 +73,12 @@ if ($result && mysqli_num_rows($result) > 0) {
 
 		/* Hover Effect */
 		.edit-profile-btn:hover {
-			background-color: #a7282b;
+			background-color: #0097b2;
 		}
 
 		.image-drop-zone {
 			position: relative;
-			border: 2px dashed #b72227;
+			border: 2px dashed #1b5d94;
 			border-radius: 10px;
 			height: 180px;
 			cursor: pointer;
@@ -94,11 +94,11 @@ if ($result && mysqli_num_rows($result) > 0) {
 
 		.image-drop-zone i {
 			font-size: 36px;
-			color: #b72227;
+			color: #1b5d94;
 		}
 
 		.image-drop-zone span {
-			color: #b72227;
+			color: #1b5d94;
 			font-weight: 600;
 		}
 

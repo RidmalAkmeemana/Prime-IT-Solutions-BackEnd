@@ -87,7 +87,7 @@ if (mysqli_num_rows($permission_query) > 0) {
 			display: inline-block;
 			padding: 8px 20px;
 			border-radius: 5px;
-			background-color: #b72227;
+			background-color: #1b5d94;
 			color: #ffff;
 			margin-top: 8px;
 			width: 100%;

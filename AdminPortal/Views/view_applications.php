@@ -702,7 +702,7 @@ if (mysqli_num_rows($permission_query) > 0) {
 										<!-- DOWNLOAD BUTTON -->
 										<div style="text-align:center; margin-top:20px;">
 											<a href="${data.cvPdfUrl}" download
-											style="padding:10px 20px; background:#b72227; color:#fff; text-decoration:none; border-radius:5px;"><i class="fe fe-download"></i>
+											style="padding:10px 20px; background:#1b5d94; color:#fff; text-decoration:none; border-radius:5px;"><i class="fe fe-download"></i>
 												Download CV
 											</a>
 										</div>

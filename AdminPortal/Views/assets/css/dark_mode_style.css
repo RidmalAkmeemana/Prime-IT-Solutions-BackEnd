@@ -155,7 +155,7 @@ body.dark-mode .profile-menu .nav-tabs.nav-tabs-solid :hover{
 }
 
 body.dark-mode .profile-menu .nav-tabs.nav-tabs-solid .nav-link.active {
-    background-color: #b72227 !important;   /* Active tab darker highlight */
+    background-color: #1b5d94 !important;   /* Active tab darker highlight */
 }
 
 /* ================================
@@ -349,7 +349,7 @@ body.dark-mode #pageLoader .loader-content {
 }
 
 body.dark-mode #pageLoader .spinner {
-	border: 5px solid #b72227;
+	border: 5px solid #1b5d94;
 	border-top: 5px solid transparent;
 }
 
@@ -385,7 +385,7 @@ body.dark-mode .application-card span {
 
 /* Download button */
 body.dark-mode .application-card a {
-    background-color: #b72227 !important;
+    background-color: #1b5d94 !important;
     color: #ffffff !important;
 }
 

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 24, 2026 at 08:13 AM
+-- Generation Time: May 26, 2026 at 05:26 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.0.30
 
@@ -44,7 +44,8 @@ CREATE TABLE `tbl_applicants` (
 INSERT INTO `tbl_applicants` (`Id`, `Applicant_Id`, `Applicant_Name`, `Applicant_Address`, `Applicant_Contact`, `Applicant_Email`, `Applicant_CV`) VALUES
 (46, 'APP0001', 'Ridmal Akmeemana', '570/4, Pathalwatte Rd, Erewwala, Pannipitiya', '0773697070', 'rajeewaakmeemana@gmail.com', 'Files/APP0001.pdf?v=1776421284'),
 (47, 'APP0002', 'Nilesh Akmeemana', '570/4, Pathalwatte Rd, Erewwala, Pannipitiya', '0746681121', 'nileshnirmalakmeemana@gmail.com', 'Files/APP0002.pdf?v=1776705932'),
-(52, 'APP0003', 'Kasun Chanuka', '170 Charles Street', '0715698774', 'quizproject89@gmail.com', 'Files/APP0003.pdf?v=1776927063');
+(52, 'APP0003', 'Kasun Chanuka', '170 Charles Street', '0715698774', 'quizproject89@gmail.com', 'Files/APP0003.pdf?v=1776927063'),
+(53, 'APP0004', 'Pubudu', '20/0 20 Main St, Suburbia VIC 2000', 'Rupasinghe', 'pubuduengt1@gmail.com', 'Files/APP0004.pdf?v=1777390898');
 
 -- --------------------------------------------------------
 
@@ -66,7 +67,8 @@ CREATE TABLE `tbl_applications` (
 
 INSERT INTO `tbl_applications` (`Id`, `Application_Id`, `Vacancy_Id`, `Applicant_Id`, `Status`) VALUES
 (39, 'RES0001', 'JOB0005', 'APP0001', 'Hired'),
-(40, 'RES0002', 'JOB0002', 'APP0002', 'Pending');
+(40, 'RES0002', 'JOB0002', 'APP0002', 'Sort Listed'),
+(42, 'RES0003', 'JOB0002', 'APP0004', 'Sort Listed');
 
 -- --------------------------------------------------------
 
@@ -236,7 +238,7 @@ CREATE TABLE `tbl_company_info` (
 --
 
 INSERT INTO `tbl_company_info` (`Id`, `Company_Name`, `Company_Address`, `Company_Email`, `Company_Tel1`, `Company_Tel2`, `Company_Tel3`) VALUES
-(1, 'Prime IT Solutions Private Limited', 'No. 36, Nugegoda Road, Pepiliyana, Sri Lanka', 'orbissolutionslk@gmail.com', '+94(11)5672666', '+94(11)5752117 ', NULL);
+(1, 'Prime IT Solitions & Consultancy Private Limited', 'Colombo, Sri Lanka', 'business@pitsl.com', '+94(78)9130036', '+94(71)4059255', NULL);
 
 -- --------------------------------------------------------
 
@@ -353,7 +355,7 @@ CREATE TABLE `tbl_locations` (
 --
 
 INSERT INTO `tbl_locations` (`Id`, `Postal_Code`, `Location_Name`) VALUES
-(1, '10230', 'Erewwala, Sri Lanka'),
+(1, '10230', 'Pannipitiya, Sri Lanka'),
 (2, '10280', 'Maharagama, Sri Lanka'),
 (3, '11450', 'Katunayake, Sri Lanka'),
 (4, '00900', 'Dematagoda, Sri Lanka'),
@@ -382,7 +384,7 @@ CREATE TABLE `tbl_reviews` (
 
 INSERT INTO `tbl_reviews` (`Id`, `Customer_Id`, `Star_Rating`, `Message`, `Is_Approved`, `Created_Date`) VALUES
 (5, 'CUS0008', 4, 'Highly Recomended', 1, '2026-01-05 23:42:46'),
-(7, 'CUS0005', 3, 'Best', 1, '2026-01-06 14:04:44'),
+(7, 'CUS0005', 3, 'Best', 0, '2026-01-06 14:04:44'),
 (8, 'CUS0010', 5, 'Prime IT Solutions showed professionalism and outstanding developer efficiency. Any questions and problems, arising during the development cycle, were attended to by Prime specialists in a timely fashion leaving no unresolved issues.Prime team always remained responsive, demonstrated great communicative skills and ensured smooth interaction throughout all development and implementation stages, suggesting articulate and consistent decisions and viable solutions for our project.Prime ensured fast finalization of our project and fully met our expectations, concerning the time to bring the new features to our clients. We won\'t hesitate to turn to Prime services again and hope for further fruitful collaboration.', 1, '2026-02-07 07:03:25');
 
 -- --------------------------------------------------------
@@ -570,7 +572,8 @@ INSERT INTO `tbl_vacancies` (`Id`, `Vacancy_Id`, `Job_Title`, `Department_Id`, `
 (32, 'JOB0003', 'Network Infrastructure Engineer', 15, '<p>Design and implement network infrastructure for enterprise clients.</p>', 1, 12, 1, '2026-03-19 17:30:41', '2026-03-19 17:30:41'),
 (37, 'JOB0004', 'IoT Solutions Architect', 20, '<p class=\"text-muted-foreground mb-4 leading-relaxed\">Architect and deploy <strong>IoT solutions</strong> for industrial and commercial applications.</p>', 10, 10, 1, '2026-03-24 23:25:38', '2026-04-01 00:00:00'),
 (38, 'JOB0005', 'Quality Assurance Engineer', 13, '<p>Software Quality Assurance (SQA) is a proactive process-oriented approach ensuring software meets quality standards, user needs, and business goals throughout the development lifecycle.</p>', 5, 10, 1, '2026-04-07 22:21:00', '2026-04-01 08:37:00'),
-(44, 'JOB0006', 'Cybersecurity Analyst', 14, '<p>QA Test</p>', 2, 11, 1, '2026-04-04 12:32:20', '2026-03-31 23:46:00');
+(44, 'JOB0006', 'Cybersecurity Analyst', 14, '<p>QA Test</p>', 2, 11, 1, '2026-04-04 12:32:20', '2026-03-31 23:46:00'),
+(46, 'JOB0007', 'Test', 14, '<p>QA Test</p>', 9, 10, 1, '2026-04-28 20:58:15', '2026-05-01 20:58:00');
 
 --
 -- Indexes for dumped tables
@@ -721,13 +724,13 @@ ALTER TABLE `tbl_vacancies`
 -- AUTO_INCREMENT for table `tbl_applicants`
 --
 ALTER TABLE `tbl_applicants`
-  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=53;
+  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=54;
 
 --
 -- AUTO_INCREMENT for table `tbl_applications`
 --
 ALTER TABLE `tbl_applications`
-  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=42;
+  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=43;
 
 --
 -- AUTO_INCREMENT for table `tbl_backend`
@@ -823,7 +826,7 @@ ALTER TABLE `tbl_user`
 -- AUTO_INCREMENT for table `tbl_vacancies`
 --
 ALTER TABLE `tbl_vacancies`
-  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=46;
+  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=47;
 
 --
 -- Constraints for dumped tables
