@@ -1,15 +1,15 @@
 <?php
 	class DBController 
 	{
-		  private $host = "localhost";
-		  private $user = "root";
-		  private $password = "";
-		  private $database = "db_prime_it";
-
 		//   private $host = "localhost";
-		//   private $user = "mdrizxbowc_Orbis";
-		//   private $password = "HcL=2h5y%40t";
-		//   private $database = "mdrizxbowc_db_orbis_solutions_inventory_system";
+		//   private $user = "root";
+		//   private $password = "";
+		//   private $database = "db_prime_it";
+
+		  private $host = "localhost";
+		  private $user = "mvbqglsbvy_prime_it";
+		  private $password = "%aO?rG=e)CaT;ml,";
+		  private $database = "mvbqglsbvy_db_prime_it";
 		  private $conn;
 
 		function __construct() 

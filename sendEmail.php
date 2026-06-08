@@ -28,21 +28,21 @@ $mail = new PHPMailer(true);
 
 try {
     // Server settings
-    // $mail->isSMTP();
-    // $mail->Host       = 'mail.spacemail.com';           // Replace with your SMTP server
-    // $mail->SMTPAuth   = true;
-    // $mail->Username   = 'info@orbislk.com';     // Replace with your email
-    // $mail->Password   = '6BB7A5A6-106c-4553-a856-f1D04F71C68D';              // Replace with your email password or app password
-    // $mail->SMTPSecure = 'ssl';                        // Use 'ssl' or 'tls'
-    // $mail->Port       = 465;                          // Use 587 for TLS, 465 for SSL
-
     $mail->isSMTP();
-    $mail->Host       = 'smtp.gmail.com';           // Replace with your SMTP server
+    $mail->Host       = 'mail.spacemail.com';           // Replace with your SMTP server
     $mail->SMTPAuth   = true;
-    $mail->Username   = 'orbissolutionslk@gmail.com';     // Replace with your email
-    $mail->Password   = 'vzvf nixe fmom xped';              // Replace with your email password or app password
+    $mail->Username   = 'admin@pitsl.com';     // Replace with your email
+    $mail->Password   = 'Adminzila@01';              // Replace with your email password or app password
     $mail->SMTPSecure = 'ssl';                        // Use 'ssl' or 'tls'
     $mail->Port       = 465;                          // Use 587 for TLS, 465 for SSL
+
+    // $mail->isSMTP();
+    // $mail->Host       = 'smtp.gmail.com';           // Replace with your SMTP server
+    // $mail->SMTPAuth   = true;
+    // $mail->Username   = 'orbissolutionslk@gmail.com';     // Replace with your email
+    // $mail->Password   = 'vzvf nixe fmom xped';              // Replace with your email password or app password
+    // $mail->SMTPSecure = 'ssl';                        // Use 'ssl' or 'tls'
+    // $mail->Port       = 465;                          // Use 587 for TLS, 465 for SSL
 
     // Recipients
     $mail->setFrom($from, $name);

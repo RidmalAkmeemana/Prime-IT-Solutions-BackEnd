@@ -111,7 +111,7 @@ if ($result && mysqli_num_rows($result) > 0) {
                             <!-- Form -->
                             <form method="" class="needs-validation" novalidate="">
                                 <div class="form-group">
-                                    <a href="http://localhost:3000/" class="btn btn-primary btn-block">Go to Web <i class="fa fa-arrow-right" aria-hidden="true"></i></a>
+                                    <a href="https://pitsl.com/" class="btn btn-primary btn-block">Go to Web <i class="fa fa-arrow-right" aria-hidden="true"></i></a>
                                     <a href="<?php echo $base_url ?>AdminPortal/Views/index.php" class="btn btn-dark btn-block">Go to Admin Panel <i class="fa fa-arrow-right" aria-hidden="true"></i></a>
                                 </div>
                             </form>
