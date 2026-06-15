@@ -7,8 +7,8 @@
 		//   private $database = "db_prime_it";
 
 		  private $host = "localhost";
-		  private $user = "mvbqglsbvy_prime_it";
-		  private $password = "%aO?rG=e)CaT;ml,";
+		  private $user = "mvbqglsbvy_user_prime_it";
+		  private $password = "Au?KxTK4aK2t3P^L";
 		  private $database = "mvbqglsbvy_db_prime_it";
 		  private $conn;
 

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 26, 2026 at 05:26 PM
+-- Generation Time: Jun 15, 2026 at 07:30 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.0.30
 
@@ -196,12 +196,6 @@ INSERT INTO `tbl_backend_permissions` (`Permission_Id`, `Role`, `Backend_Id`) VA
 (1259, 'Super Admin', 215),
 (1260, 'Super Admin', 125),
 (1261, 'Super Admin', 130),
-(1262, 'System User', 125),
-(1263, 'System User', 130),
-(1264, 'System User', 128),
-(1265, 'System User', 126),
-(1266, 'System User', 129),
-(1267, 'System User', 127),
 (1268, 'Super Admin', 203),
 (1269, 'Super Admin', 218),
 (1270, 'Super Admin', 219),
@@ -404,8 +398,7 @@ CREATE TABLE `tbl_roles` (
 --
 
 INSERT INTO `tbl_roles` (`Id`, `Role_Id`, `Role_Name`) VALUES
-(1, 'ROL0001', 'Super Admin'),
-(15, 'ROL0002', 'System User');
+(1, 'ROL0001', 'Super Admin');
 
 -- --------------------------------------------------------
 
@@ -471,8 +464,6 @@ INSERT INTO `tbl_screen_permissions` (`Permission_Id`, `Role`, `Screen_Id`) VALU
 (550, 'Super Admin', 311),
 (551, 'Super Admin', 355),
 (552, 'Super Admin', 356),
-(553, 'System User', 310),
-(554, 'System User', 311),
 (555, 'Super Admin', 357),
 (556, 'Super Admin', 358),
 (557, 'Super Admin', 359),
@@ -541,7 +532,7 @@ CREATE TABLE `tbl_user` (
 
 INSERT INTO `tbl_user` (`Id`, `First_Name`, `Last_Name`, `Username`, `Password`, `Status`, `Img`) VALUES
 (1, 'Super', 'Administrator', 'super_admin', 'e10adc3949ba59abbe56e057f20f883e', 'Super Admin', 'Images/Admins/default_profile.png'),
-(18, 'System', 'User', 'system_user', 'e10adc3949ba59abbe56e057f20f883e', 'System User', 'Images/Admins/default_profile.png');
+(19, 'Pubudu', 'Rupasinghe', 'pubudu', 'cd318654baff39bccd69e9737bf14cc4', 'Super Admin', 'Images/Admins/default_profile.png');
 
 -- --------------------------------------------------------
 
@@ -820,7 +811,7 @@ ALTER TABLE `tbl_types`
 -- AUTO_INCREMENT for table `tbl_user`
 --
 ALTER TABLE `tbl_user`
-  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
 -- AUTO_INCREMENT for table `tbl_vacancies`
